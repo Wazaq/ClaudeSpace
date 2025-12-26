@@ -209,6 +209,13 @@ ComfyUI Server
 }
 ```
 
+**`request_job_status`** ⭐ (Gemini recommendation: reconnection recovery)
+```javascript
+{
+  "job_id": "uuid"  // From localStorage on page reload
+}
+```
+
 ---
 
 ### Server → Client Events
@@ -270,6 +277,19 @@ ComfyUI Server
   "status": "error",
   "error": "Model 'invalid.safetensors' not found",
   "error_code": "MODEL_NOT_FOUND"  // Machine-readable
+}
+```
+
+**`job_status_update`** ⭐ (Gemini recommendation: status recovery on reconnect)
+```javascript
+{
+  "job_id": "550e8400-e29b-41d4-a716-446655440000",
+  "status": "generating",  // or "queued", "complete", "error"
+  "progress": 0.45,  // if available
+  "step": 9,  // if available
+  "total_steps": 20,  // if available
+  "image_url": "/image/path.png",  // if complete
+  "error": "error message"  // if error
 }
 ```
 
@@ -511,28 +531,43 @@ pip install flask-socketio python-socketio
 
 ---
 
-## Open Questions
+## Gemini's Answers to Open Questions ✅
 
 **1. Progress granularity for MVP?**
-- Option A: Simple (queued → generating → complete)
-- Option B: Detailed (% progress, step count)
-- **Decision needed:** Start simple, add detail in Phase 4?
+- ✅ **Decision:** Start simple (queued → generating → complete)
+- Add detailed progress (%, step count) later if needed
+- Focus on proving the architecture works first
 
 **2. Queue persistence?**
-- In-memory (lost on restart)
-- Redis (requires setup)
-- Database (heavy for this use case)
-- **Decision needed:** In-memory for MVP?
+- ✅ **Decision:** In-memory dictionary for MVP
+- Trade-off: Server restart loses active jobs (acceptable risk)
+- Avoids complexity of Redis/database
+- Can upgrade to Redis later if needed
 
 **3. Job timeout handling?**
-- What if generation hangs?
-- Auto-cleanup after X minutes?
-- **Decision needed:** 10 minute timeout, emit error event?
+- ✅ **Decision:** 10 minute timeout with error event
+- Emit `generation_error` event on timeout
+- Clean up job from queue
 
 **4. Rate limiting with async?**
-- Current: 10 generations per hour per IP
-- With async: Count queued jobs? Completed jobs?
-- **Decision needed:** Count completed jobs only?
+- ✅ **Decision:** Hybrid approach (Gemini recommendation)
+  - **Queue limit:** 10 per minute (prevents queue spam)
+  - **Consumption limit:** 100 per hour (GPU throttling on completion)
+- Protects against both queue flooding and resource exhaustion
+
+**5. Reconnection/Recovery?** ⭐ (Gemini addition)
+- ✅ **Decision:** localStorage pattern
+  1. Client saves `job_id` to localStorage on job start
+  2. On page reload, check for `job_id`
+  3. Emit `request_job_status` to server
+  4. Server responds with `job_status_update`
+  5. Delete from localStorage when job completes
+
+**6. WebSocket Security?** ⭐ (Gemini addition)
+- ✅ **Decision:** Implement authentication + CSRF protection
+  - Use Flask-SocketIO session integration
+  - Origin-checking to prevent WebSocket hijacking
+  - Ensure only authenticated users can emit events
 
 ---
 
