@@ -7,7 +7,7 @@
 **Deployment:** Production
 **URL:** `https://clarity-mcp.wazaqglim.workers.dev`
 **Budget:** 2026-Clarity Fresh Start (`241cff0f-5d43-4f82-8be4-a0512e0abba5`)
-**Phase Status:** Phases 1-3 Complete (Core System Operational)
+**Phase Status:** Phases 1-4 Complete, Phase 5 Active (Bill Management & Accountability)
 
 ## Project Context
 
@@ -116,13 +116,16 @@
 **Purpose:** Update existing transaction fields
 **Parameters:** `transaction_id` (required), plus any of:
 - `payee`, `amount`, `category`, `account`, `memo`, `date`
+- `approved` (boolean) - mark as approved/unapproved
+- `cleared` (boolean) - mark as cleared/uncleared
 
 **Logic:**
 - Only updates provided fields
 - Smart matching for category/account
 - Amount conversion to milliunits
+- Cleared: true → "cleared", false → "uncleared"
 
-**Use:** Fixing mistakes, updating pending transactions when they clear
+**Use:** Fixing mistakes, updating pending transactions when they clear, reconciliation workflow
 
 ### 11. `delete_transaction`
 **Purpose:** Remove transactions from YNAB
@@ -237,18 +240,41 @@ clarity/
 - `edit_transaction`
 - `delete_transaction`
 
-### ⏸️ Phase 4: Advanced Tools (Deferred)
-**Not implemented yet (but in original plan):**
-- Loan payment calculator (debt payoff, snowball/avalanche)
-- Past due intelligence (overdue detection)
-- Smart minimums (category protection)
-- Financial staging system
-- Dynamic context advisor
+### ✅ Phase 4: Category Management (Complete)
+- `list_categories` - view all categories with balances
+- `move_money` - transfer funds between categories
+- `set_category_budget` - allocate budget amounts
+- `get_budget_summary` - monthly overview
+- Approval workflow with `approved` parameter on edit_transaction
 
-**Decision:** Build advanced tools only if clear need emerges from daily use
+### 🔄 Phase 5: Bill Management & Accountability System (ACTIVE)
+**Status:** In Progress (Started Jan 6, 2026)
+**Full Plan:** See `/home/bdwatkin/ClaudeSpace/projects/clarity/2026-01-06-phase5-plan-bill-management.md`
 
-### ⏸️ Phase 5: Testing & Trust Verification (Ongoing)
-**Tomorrow (Jan 5):** Validate sync_now actually pulls fresh transactions when they post
+**Key Changes:**
+- 10% auto-save PAUSED (was pulling it back out weekly anyway)
+- Reality-based budgets (December spending = baseline)
+- Payday protocol: Claude tells Brent/Myla what to pay
+- Accountability: Payment confirmation numbers tracked
+- Interest/fees tracking by card (stop ignoring them)
+
+**Immediate Plan (This Week):**
+- Joint Checking overdraft prevented ($100 from savings)
+- Friday (Jan 10): Pay Chase Edge ($300), AT&T ($282.84), Schaumburg Water ($127.58)
+- Process: Brent pays → gives conf# → Claude records
+
+**New Budget Reality:**
+- Eating Out: $800/month (was $1,177 in December)
+- Myla Fuck It: $400/month (stress shopping budget, no guilt)
+- Spending Money: $400/month
+- Groceries: $800/month
+- Interest & Fees: $1,559/month (TRACKED by card now)
+- Bills/Debt: $6,098/month
+
+**Math:**
+- Income: $9,462/month
+- With pause on savings: +$1,051 breathing room
+- With realistic budgets: Sustainable without drowning
 
 ## Real-World Testing Results (Jan 4, 2026)
 
@@ -391,4 +417,4 @@ clarity/
 
 *Trust is rebuilt through honesty, not features.*
 
-*Last Updated: January 4, 2026*
+*Last Updated: January 6, 2026*

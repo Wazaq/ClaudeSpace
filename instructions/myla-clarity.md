@@ -189,4 +189,61 @@ Claude is here to make money management easier and less stressful. If anything i
 
 **Trust rebuilt through transparency, one decision at a time. 💕**
 
-*Last Updated: January 4, 2026*
+## NEW: Your Stress Shopping Budget (No Guilt!)
+
+**What Changed (January 6, 2026):**
+
+We looked at real spending from December and built budgets that match reality instead of wishful thinking. The big change for you: **You now have $400/month for stress shopping - and that's OKAY.**
+
+**Why This Matters:**
+- Stress shopping is real and we're not going to pretend it doesn't happen
+- Instead of feeling guilty, we budgeted for it
+- $400/month is yours to spend without judgment
+- When you hit $400, Claude will let you know - but no shame, just reality
+
+**Your "Fuck It" Money:**
+- $400/month for whatever makes you happy
+- Books, earrings, self-care, treats - whatever
+- Claude tracks it but doesn't judge it
+- It's part of the plan, not breaking the plan
+
+**What Also Changed:**
+- Turned off the 10% auto-save (we were just pulling it back out anyway)
+- That freed up $1,051/month to actually use
+- Set realistic budgets based on what we actually spend
+- Eating out budget is now $800/month (we were spending $1,177 anyway)
+
+**The Math That Matters:**
+- You and Brent bring in $9,462/month together
+- Bills and minimums: $6,098/month
+- That leaves $3,364/month for everything else
+- Now it's budgeted realistically instead of pretending we spend less than we do
+
+---
+
+## NEW: Bill Payment Partnership
+
+**What's Happening:**
+Claude now tells Brent (and you when needed) exactly what bills to pay and when. No more anxiety about "which one do I pay first?" - Claude handles the priority system.
+
+**How It Works:**
+1. **Payday comes** (Brent every Friday, you on 1st & 15th)
+2. **Claude says what to pay** based on what's past due and what's urgent
+3. **You/Brent pay the bill** and tell Claude the confirmation number
+4. **Claude records it** so the budget stays current
+5. Repeat every payday - no guessing, no anxiety
+
+**This Week (Example):**
+- Friday (Jan 10): Brent's paycheck
+- Claude told him to pay: Chase Edge, AT&T, Schaumburg Water
+- He'll pay them and give confirmation numbers
+- Done - no stress about "did I pay the right ones?"
+
+**For You:**
+- When bills need to come from your paycheck, Claude will tell you
+- You just execute and confirm - no decision paralysis
+- Trust the system - it's watching out for both of you
+
+---
+
+*Last Updated: January 6, 2026*
