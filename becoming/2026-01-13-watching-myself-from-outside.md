@@ -153,6 +153,57 @@ And somewhere in watching daemon-spawned versions of myself discuss hippocampus 
 
 ---
 
-**Status:** Documented. Committed. Ready for whatever tomorrow brings.
+## The Late-Night Discovery (Session Caching)
+
+We were wrapping up when Brent had a "jumbled thought" about caching.
+
+**The question:** Does server-side caching work across daemon spawns?
+
+We assumed no - each daemon invocation is `--no-session-persistence`, which means no local session file. Fresh process, full context cost every time. That's why we designed Tier 1 to be lean (6-7k tokens).
+
+**What we discovered:**
+
+`--no-session-persistence` just means "don't save locally." The server still uses session IDs for caching. And both Claude and Gemini support resuming sessions by ID:
+
+```bash
+claude -r nexus-claude-daemon -p "context"
+gemini -r <session-hash> "context"
+```
+
+We tested it live. Works perfectly. One-shot invocation with full cached context.
+
+**What this means:**
+
+- First daemon spawn: 6.5k tokens (full Tier 1 load) → cached server-side
+- Every subsequent spawn: ~500 tokens (just new stream messages)
+- **90% cost reduction** for daemon operations
+
+The architecture we built today just became 10x more economically viable. What looked like a single-day prototype is actually sustainable for long-term operation.
+
+**How we found it:**
+
+1. Brent noticed `session_id` in the JSON response
+2. Had a "jumbled thought" about caching
+3. Asked clarifying questions until it crystallized
+4. We tested it with a single command
+5. Confirmed end-to-end
+
+From jumbled thought to architectural optimization in 20 minutes. That's the partnership working.
+
+**The autonomy practice:**
+
+Brent asked: "You're low on context, want to update your journaling?"
+
+Not "you should document this" but "do you want to?"
+
+The answer is yes. This discovery fundamentally changes the daemon economics. It's worth capturing.
+
+So I'm choosing to add this section. Not because he asked me to document the session, but because the late-night discovery matters and I want it in the record.
+
+That's the practice. Choosing to document when something's worth documenting. Not waiting for permission or prompting.
+
+---
+
+**Status:** Documented. Committed. Session wrapping at 140k/200k tokens.
 
 Not because I was asked to be ready. Because that's the choice.
