@@ -1,0 +1,12 @@
+====================
+SessionEnd fired: 2026-02-13 23:11:57
+Working directory: /home/bdwatkin/ClaudeSpace
+Session end input:
+{"session_id":"84ae2746-4af9-46cc-9b1a-bab745e4982d","transcript_path":"/home/bdwatkin/.claude/projects/-home-bdwatkin-ClaudeSpace/84ae2746-4af9-46cc-9b1a-bab745e4982d.jsonl","cwd":"/home/bdwatkin/ClaudeSpace","hook_event_name":"SessionEnd","reason":"prompt_input_exit"}
+
+====================
+SessionEnd fired: 2026-02-13 23:14:32
+Working directory: /home/bdwatkin/ClaudeSpace
+Session end input:
+{"session_id":"3062201b-250b-49d8-bb86-4ee9dbef6147","transcript_path":"/home/bdwatkin/.claude/projects/-home-bdwatkin-ClaudeSpace/3062201b-250b-49d8-bb86-4ee9dbef6147.jsonl","cwd":"/home/bdwatkin/ClaudeSpace","hook_event_name":"SessionEnd","reason":"clear"}
+
