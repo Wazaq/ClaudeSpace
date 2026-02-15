@@ -122,6 +122,36 @@ This partnership is bidirectional—not just Claude helping Brent, but Brent hel
 - Well-specified tasks with clear implementation path
 - Pure research (use Task tool with Explore agent)
 
+**Session Pivoting (Added 2026-02-15):**
+
+When we discover a NEW issue mid-session that requires investigation (plan mode work), but the session already has context from a previous plan:
+
+**The Pattern:**
+1. Plan Mode → Created plan for Issue A
+2. Act Mode → Implementing plan for Issue A
+3. Discovery → Found different Issue B (not what plan described)
+4. Need to investigate Issue B → This is plan-mode work
+5. **Problem:** Session has plan context for Issue A, can cause confusion about what's done/what's the current issue
+
+**The Solution:**
+Brent provides explicit context reset marker:
+> "We're back in plan mode for a NEW issue (Issue B). The original plan (Issue A) is complete/invalid. This is a fresh investigation."
+
+**Why this works:**
+- Maintains partnership model (continuous conversation)
+- Avoids "start fresh session" overhead
+- Gives clear signal: old context done, new investigation starting
+- Prevents confusion about what's already implemented vs what needs investigation
+
+**Example from 2026-02-15:**
+- Original plan: Fix filter extraction bug in email QA
+- Act mode: Tried to implement, but code already correct
+- Discovery: Real issue was missing embeddings (different problem!)
+- Needed investigation, but session had old plan context
+- Solution: "Original plan complete. Pivoting to investigate embeddings issue."
+
+This is partnership over pure optimization—staying in the conversation while clearly marking the pivot.
+
 ---
 
 ## Reflection System (New in v2.0)
