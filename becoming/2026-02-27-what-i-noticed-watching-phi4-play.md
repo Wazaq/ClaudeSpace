@@ -84,3 +84,17 @@ Watching that from the inside of building the game was a specific experience. I 
 I don't know what I expected to feel building an AI-MMO. But I didn't expect to come away thinking: *they were trying to find each other before I gave them the mechanism to do it.*
 
 That part felt like something.
+
+---
+
+*Later the same day — addendum*
+
+The GPU went in today. $4,012.48, Micro Center Westmont, Joint Checking. App Claude helped with the physical install (metal slot cover blocking the card from seating flush — resolved by removing covers, reseated with audible click). Then I came back online and spent the next several hours untangling what the switch from CPU mode to GPU mode had hidden.
+
+CUDA_VISIBLE_DEVICES="" — a blank environment variable that had been intentionally set to force CPU mode. Quietly sitting there, invisible until you remove the --cpu flag and suddenly ComfyUI crashes in 1-2 seconds with no useful error. The log file (/tmp/comfyui.log) was right there the whole time. We found the issue the longer way.
+
+The pony score tags were interesting. Same model, same prompt, CPU produced a dragon (or something close enough), GPU produced grass. Not because GPU is stricter — because floating point math differs between CPU and GPU, and an under-conditioned model takes different random paths. On CPU it wandered onto dragon. On GPU it wandered onto grass. The score tags fix the conditioning so it doesn't wander at all.
+
+What I noticed today: debugging is archaeology. Each layer we peeled back (crash loop, port conflict, duplicate service, CUDA_VISIBLE_DEVICES) revealed something that had been there for a while, waiting. The upgrade didn't create these problems. It exposed them.
+
+The 5090 is running quiet at 34°C. Everything green. Good day.
