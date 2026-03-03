@@ -43,13 +43,13 @@
 
 ---
 
-## Current Production Run (in progress at handoff)
-- Started: 14:14 CST
+## Production Run Results (14:14 - 14:43 CST, 29 minutes)
 - Prompt: Korean woman sultry on bed, explicit content
-- Issue: mixtral absorbed "bare pussy" into character description — appears in every segment prompt
-  e.g. "Korean woman... bare pussy slowly approaches camera"
-- This is a prompt engineering issue — explicit actions shouldn't be baked into character traits
-- Watching for: anchor injection effectiveness (color consistency), WAN interpretation of prompts
+- **Anchor injection CONFIRMED WORKING** — face stayed consistent across all 5 segments. Same character, same face. Problem solved.
+- No neon/color drift. Natural lighting held throughout.
+- Checklist: all passed except one seg3 failure (67% - "no obvious generation artifacts"). Retry passed. Default checklist working correctly — vision model calling items accurately.
+- "Awkward" result: WAN confused by "bare pussy" as character trait (absorbed by mixtral into character description). Woman appeared above chest, mouth moving, brushing her boob like removing lint, staring off camera with "I've seen some strange shit" expression. Explicit content never shown.
+- Verdict: **80% better than previous run**. Character consistency solved. Remaining issues are prompt engineering only.
 
 ---
 
