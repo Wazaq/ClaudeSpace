@@ -77,7 +77,21 @@ Seed node stays at `"12"` — no change to `_submit_segment` seed logic needed.
 
 **5. Checklist action-awareness** — checklists for action segments fail because the reviewer checks stills, not motion. "Sultry dance being performed" can't be confirmed from a frame. "Clothing partially removed" can. The planner LLM needs to generate *result-state* checklist items for action segments, not motion descriptions. Also: outfit checklist items conflict with undressing prompts — can't check "outfit visible" while the prompt says she's removing it. Prompt and checklist need to agree on the *end state* of the segment.
 
-**4. Init image workflow (optional pre-production step)** — before generating a sample, optionally drop into the image generation tab (txt2img + img2img iterations) to craft the perfect anchor image. That image becomes the init for the sample and all I2V segments. Only use it when character specificity matters. Lives in the Image tab, feeds into Production tab. This is what was discussed previously about using the image pipeline to lock character before video.
+**4. Init image workflow (optional pre-production step)** — expanded understanding after Samantha production:
+
+*Original idea:* craft a single anchor image before production to lock character appearance.
+
+*Expanded:* WAN is SO good at preserving the init state that it becomes a problem for narrative progression — it keeps her clothed because the init image shows her clothed. The fix is **per-segment init images**. Each segment gets its own starting frame that shows the *end state of the previous segment*. So:
+- Seg 1 init: clothed (standard sample)
+- Seg 2 init: shirt open, bra visible
+- Seg 3 init: skirt removed, just bra+panties
+- Seg 4 init: dancing pose, lingerie only
+- Seg 5 init: nearly undressed
+- Seg 6 init: final state
+
+This means the Image tab workflow becomes: generate → img2img iterate → "use as seg N init" button → locks that image as the init for that specific segment in the production plan. The production planner would need to accept optional per-segment init images instead of only chaining from the previous segment's last frame.
+
+*UI flow:* Optional "Build Init Images" step between Plan and Generate. Skip it for simple productions, use it when the narrative requires visual state changes across segments.
 
 ---
 
