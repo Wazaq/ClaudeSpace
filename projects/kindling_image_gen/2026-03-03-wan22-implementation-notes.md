@@ -93,6 +93,8 @@ This means the Image tab workflow becomes: generate → img2img iterate → "use
 
 *UI flow:* Optional "Build Init Images" step between Plan and Generate. Skip it for simple productions, use it when the narrative requires visual state changes across segments.
 
+*2026-03-04 update:* Per-segment inits are built and working. The remaining problem is "scene snap-back" — every segment anchors to S1's last frame, so WAN keeps pulling the scene back to the starting pose. The fix is per-segment inits showing the END STATE of the previous segment, not the starting state. Each init image should be the last frame of the previous segment (or a manually crafted image showing where that segment should end). This is the next chapter for init image workflow.
+
 ---
 
 ## Session Progress
