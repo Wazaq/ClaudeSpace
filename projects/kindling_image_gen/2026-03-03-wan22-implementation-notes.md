@@ -75,6 +75,8 @@ Seed node stays at `"12"` — no change to `_submit_segment` seed logic needed.
 
 **3. Waifu/Kindling integration** — Samantha in Waifu Chat crafts the prompt, one button sends it directly to Kindling production pipeline. Samantha is already built with no content restrictions. Integration point is probably a POST to Kindling's production session endpoint from Waifu.
 
+**5. Checklist action-awareness** — checklists for action segments fail because the reviewer checks stills, not motion. "Sultry dance being performed" can't be confirmed from a frame. "Clothing partially removed" can. The planner LLM needs to generate *result-state* checklist items for action segments, not motion descriptions. Also: outfit checklist items conflict with undressing prompts — can't check "outfit visible" while the prompt says she's removing it. Prompt and checklist need to agree on the *end state* of the segment.
+
 **4. Init image workflow (optional pre-production step)** — before generating a sample, optionally drop into the image generation tab (txt2img + img2img iterations) to craft the perfect anchor image. That image becomes the init for the sample and all I2V segments. Only use it when character specificity matters. Lives in the Image tab, feeds into Production tab. This is what was discussed previously about using the image pipeline to lock character before video.
 
 ---
