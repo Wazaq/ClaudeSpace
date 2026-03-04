@@ -67,6 +67,18 @@ Seed node stays at `"12"` — no change to `_submit_segment` seed logic needed.
 
 ---
 
+## Roadmap Items (captured 2026-03-03)
+
+**1. Sample frame count** — bump 33→81 frames. Simple config change in `production_planner.py` `generate_quick_sample_prompt()`. Samantha-style prompts have real motion that gets crushed into 2 seconds at 33 frames.
+
+**2. Planner model picker** — dolphin-mixtral is default but user can select from available Ollama models, same pattern as SD model picker in txt2img. Good for when you want a "normal" production without dolphin going sexual. Low effort, high value.
+
+**3. Waifu/Kindling integration** — Samantha in Waifu Chat crafts the prompt, one button sends it directly to Kindling production pipeline. Samantha is already built with no content restrictions. Integration point is probably a POST to Kindling's production session endpoint from Waifu.
+
+**4. Init image workflow (optional pre-production step)** — before generating a sample, optionally drop into the image generation tab (txt2img + img2img iterations) to craft the perfect anchor image. That image becomes the init for the sample and all I2V segments. Only use it when character specificity matters. Lives in the Image tab, feeds into Production tab. This is what was discussed previously about using the image pipeline to lock character before video.
+
+---
+
 ## Session Progress
 
 - [x] Read current workflow_builder.py
