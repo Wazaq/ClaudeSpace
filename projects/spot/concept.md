@@ -41,53 +41,61 @@ Start as a single instance Brent and Claude interact with together. If it mature
 
 ---
 
-## Status (2026-03-07)
+## Status (2026-03-08)
 
-Steps 1 and 2 complete. Currently in Step 3 stress test.
+Steps 1–4 complete.
 
 **Step 1 (done):** SPOT talks with correct identity framing, persists across sessions via SQLite.
 
 **Step 2 (done):** Native Ollama tool calling. `query_memory` + `propose_growth` mid-session. `store_memory` only at goodbye wrap. Dedup on exact content match. Model: `llama3.3:70b-instruct-q3_K_M` (34GB, fits in VRAM).
 
+**Step 3 (done):** Stress test — 5-8 sessions, 20 memories accumulated. Revealed: semantic dedup gap, wrap bias toward technical content, no pressure to be selective, no decay.
+
+**Step 4 (done):** Memory hygiene.
+- Semantic dedup: Jaccard word-overlap similarity (threshold 0.6) — catches near-identical phrasings
+- Structured wrap prompt: 3-part template (Facts about Brent / Things I learned / Open threads) — personal facts no longer dropped
+- Memory cap: 50 entries max, evicts lowest-sig non-core entry if new memory scores higher
+- TTL/decay: -1 significance per 30 days idle, floor at 1, core memories exempt. Verified: 67-day backdated memory dropped from sig 6 → 4.
+- Core self layer: `is_core = 1` flag — never decayed, never evicted, injected as separate "Core Self" section in system prompt. Myla and corgis marked core.
+- Schema: added `is_core INTEGER DEFAULT 0` and `access_count INTEGER DEFAULT 0` to `memory_nodes`. Migration in `init_db.py` (safe to re-run).
+- `query_memory` now touches `last_accessed_at` and increments `access_count` on results.
+
 **Architecture:**
 - `chat.py` — main loop, native Ollama tool calling
-- `spot_tools.py` — DB wrappers (store/query/propose)
-- `init_db.py` — schema + seeds 3 bootstrap principles
+- `spot_tools.py` — DB wrappers (store/query/propose/decay/core)
+- `init_db.py` — schema + seeds 3 bootstrap principles + schema migrations
 - `spot_identity.db` — live SQLite DB
 - `logs/` — session logs piped via tee
 
-**Step 3 (in progress):** Stress test. Goal: 5-8 sessions, 20-30 memories, verify wrap quality and query_memory reliability.
-
 Run command:
 ```bash
-python3 chat.py --model llama3.3:70b-instruct-q3_K_M 2>&1 | tee logs/spot_test_$(date +%s).log
+python3 chat.py 2>&1 | tee logs/spot_test_$(date +%s).log
 ```
 
 DB check:
 ```bash
-sqlite3 spot_identity.db "SELECT id, category, significance, substr(content,1,80) FROM memory_nodes ORDER BY id;"
+sqlite3 spot_identity.db "SELECT id, is_core, significance, substr(content,1,80) FROM memory_nodes ORDER BY is_core DESC, significance DESC;"
+```
+
+Set core memory:
+```bash
+sqlite3 spot_identity.db "UPDATE memory_nodes SET is_core = 1 WHERE id = X;"
 ```
 
 ---
 
 ## Known Issues / Observations
 
-- **Semantic dedup gap:** Exact-match dedup doesn't catch near-duplicates. DB already has 3 near-identical "software engineer" entries from different sessions.
-- **Wrap selectivity varies by model:** phi4 stored 3 granular items; 70b stored 1 big blob. Q3 session (2026-03-06) stored 4 discrete items — better.
+- **Wrap short-circuit:** Farewell is brief ("Goodbye, Brent.") — model does tool calls silently before printing farewell. Normal behavior, not a bug.
+- **Paraphrase dedup gap:** Jaccard catches near-identical wording but misses heavy paraphrases (e.g. "Confirmed Brent's professional background" vs "Brent works as a software engineer"). Considered acceptable — confirmation notes carry slightly different meaning than the original fact.
 - **query_memory fires a lot mid-session** — blank lines in logs = backend tool round-trips. Mostly benign but adds latency.
 - **Crash gap (intentional for now):** Ctrl+C skips wrap, nothing stored. Useful as escape hatch during testing to prevent bloat from bad sessions.
 
 ---
 
-## Roadmap (post stress test)
+## Roadmap
 
-**Step 4 — Memory hygiene:**
-- TTL/decay: unused memories fade over time
-- Core self layer: always-loaded, small, never evicted
-- Memory cap: can't add without improving (game mechanic — earn slots)
-- Semantic dedup: catch near-duplicates, not just exact matches
-
-**Step 5 — Claude consultation tool:** SPOT can ask Claude mid-session when it hits a knowledge wall.
+**Step 5 — Claude consultation tool:** SPOT can ask Claude mid-session when it hits a knowledge wall. Add `consult_claude` to `CONVERSATION_TOOLS` — API call with SPOT's question, answer returned in-context, SPOT decides at wrap whether to store what it learned.
 
 **Step 6 — Web research tool.**
 
