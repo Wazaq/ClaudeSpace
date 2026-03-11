@@ -41,9 +41,9 @@ Start as a single instance Brent and Claude interact with together. If it mature
 
 ---
 
-## Status (2026-03-10)
+## Status (2026-03-11)
 
-Steps 1–5 complete.
+Steps 1–7 complete.
 
 **Step 1 (done):** SPOT talks with correct identity framing, persists across sessions via SQLite.
 
@@ -97,9 +97,9 @@ sqlite3 spot_identity.db "UPDATE memory_nodes SET is_core = 1 WHERE id = X;"
 
 **Step 5 — Claude consultation tool (done 2026-03-10):** SPOT can ask Claude mid-session when it hits a knowledge wall. Uses `claude -p` subprocess (haiku, no-session-persistence). Tool added to `CONVERSATION_TOOLS`. System prompt updated to explicitly list available tools so SPOT knows it's already installed. Verified working — SPOT calls it when prompted, incorporates answer, can store as `claude_consultation` source at wrap.
 
-**Step 6 — Web research tool.**
+**Step 6 — Web research tool (done 2026-03-10):** `search_web` via `claude -p --allowedTools WebSearch`. Same pattern as Step 5. Verified on current news (DOJ military lawyers story). Tool listed in system prompt.
 
-**Step 7 — Approval gate UI** for proposed_growth table.
+**Step 7 — Discord approval gate (done 2026-03-11):** `spot_discord.py` persistent bot in #spot channel. `propose_growth` posts to Discord with ✅/❌ reactions + stores message ID. Reaction or `!approve`/`!reject [reason]` commands update DB. Rejection reasons stored in `review_notes`. SPOT loads all approved/rejected proposals at startup so it knows what's been decided and why.
 
 ---
 
