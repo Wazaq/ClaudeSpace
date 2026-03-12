@@ -23,6 +23,9 @@ Look at the actual Public email formats to understand subject/content difference
 - Add to `skip_subject_patterns` if subject line is distinct enough
 - Or add content-based filtering in the triage prompt for Public specifically
 
-## Files to check
-- Neural Swarm triage prompt / YNAB processor config
-- Actual Public emails in the mailbox around 2026-03-10
+## Fix Applied (2026-03-11)
+- Confirmed no deposit confirmation emails from Public — deposits are in-app only
+- Known Public email types: "Your trade executed", "Earned interest", "Monthly statement"
+- Added all three to `skip_subject_patterns` in `config.yaml`
+- Added `public\.com` to `skip_payee_patterns` as belt-and-suspenders
+- 8 bad transactions from 2026-03-10 cleaned up manually in YNAB
