@@ -41,9 +41,9 @@ Start as a single instance Brent and Claude interact with together. If it mature
 
 ---
 
-## Status (2026-03-11)
+## Status (2026-03-12)
 
-Steps 1–7 complete.
+Steps 1–8 complete.
 
 **Step 1 (done):** SPOT talks with correct identity framing, persists across sessions via SQLite.
 
@@ -100,6 +100,13 @@ sqlite3 spot_identity.db "UPDATE memory_nodes SET is_core = 1 WHERE id = X;"
 **Step 6 — Web research tool (done 2026-03-10):** `search_web` via `claude -p --allowedTools WebSearch`. Same pattern as Step 5. Verified on current news (DOJ military lawyers story). Tool listed in system prompt.
 
 **Step 7 — Discord approval gate (done 2026-03-11):** `spot_discord.py` persistent bot in #spot channel. `propose_growth` posts to Discord with ✅/❌ reactions + stores message ID. Reaction or `!approve`/`!reject [reason]` commands update DB. Rejection reasons stored in `review_notes`. SPOT loads all approved/rejected proposals at startup so it knows what's been decided and why.
+
+**Step 8 — Autonomy: Heartbeat & Cron (done 2026-03-12):** SPOT now has a life between sessions.
+- `spot_maintenance.py` — standalone decay script, no Ollama needed. Logs what decayed to `logs/maintenance_YYYY-MM-DD.log`. Systemd timer fires daily at 3am.
+- `spot_heartbeat.py` — daily autonomous reasoning + Discord post. Loads memories/sessions/proposals, runs single Ollama inference ("It's [date]. Brent isn't here. What's on your mind?"), posts to #spot, stores a heartbeat memory (sig=2, internal). Optional growth trigger: if response contains phrases like "I should learn" or "I don't know enough about", calls `propose_growth()` — still goes through Discord approval gate.
+- `spot_tools.py` updated: `notify_discord(message)` extracted as public function; `get_recent_sessions(limit=7)` added.
+- Systemd timers: `spot-maintenance.timer` (3am daily), `spot-heartbeat.timer` (noon daily). Both system-level, `User=bdwatkin`.
+- `decay_memories()` kept in `chat.py` as safety net — idempotent, harmless if both fire same day.
 
 ---
 
