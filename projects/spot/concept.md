@@ -43,7 +43,7 @@ Start as a single instance Brent and Claude interact with together. If it mature
 
 ## Status (2026-03-12)
 
-Steps 1–8 complete.
+Steps 1–9 complete.
 
 **Step 1 (done):** SPOT talks with correct identity framing, persists across sessions via SQLite.
 
@@ -107,6 +107,8 @@ sqlite3 spot_identity.db "UPDATE memory_nodes SET is_core = 1 WHERE id = X;"
 - `spot_tools.py` updated: `notify_discord(message)` extracted as public function; `get_recent_sessions(limit=7)` added.
 - Systemd timers: `spot-maintenance.timer` (3am daily), `spot-heartbeat.timer` (noon daily). Both system-level, `User=bdwatkin`.
 - `decay_memories()` kept in `chat.py` as safety net — idempotent, harmless if both fire same day.
+
+**Step 9 — Discord conversational interface (done 2026-03-12):** SPOT now lives in Discord. `spot_core.py` extracts shared logic (tool definitions, system prompt builder, sync tool loop, goodbye wrap) used by chat.py, spot_discord.py, and spot_heartbeat.py. `spot_discord.py` extended with thread-based sessions: `!chat` or replying to any SPOT post opens a thread, which maps 1:1 to a DB session. Natural context-aware greeting (no tour guide). 60-minute inactivity timeout auto-wraps. Visible tool flag infrastructure ready for future side-effect tools. `spot-discord` systemd service enabled, always running. Terminal `chat.py` still works unchanged.
 
 ---
 
