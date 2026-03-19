@@ -41,7 +41,34 @@ python3 tools/parse_transcript.py 61231394-fb06-4c87-90ab-fd32d4aa9429
 
 ---
 
-### 2. `extract_thinking.sh` - Thinking Block Extraction
+### 2. `extract_messages.sh` - Conversation Message Extraction
+
+Extracts readable conversation text (user messages and/or assistant responses).
+Useful for sessions with no thinking blocks, or when you need the full message arc beyond the 10-message parser preview.
+
+**Usage:**
+```bash
+extract_messages.sh <session-id> [role] [search-term]
+# role: "user" | "assistant" | "both" (default: both)
+```
+
+**Examples:**
+```bash
+# Get all conversation messages
+extract_messages.sh 61231394-fb06-4c87-90ab-fd32d4aa9429
+
+# Just user messages
+extract_messages.sh 61231394-fb06-4c87-90ab-fd32d4aa9429 user
+
+# Search for a topic
+extract_messages.sh 61231394-fb06-4c87-90ab-fd32d4aa9429 both sarcasm
+```
+
+**Output:** Saves to `/tmp/messages_[session-id].txt`
+
+---
+
+### 3. `extract_thinking.sh` - Thinking Block Extraction
 
 Quick workflow to extract and optionally search thinking blocks.
 
@@ -81,7 +108,13 @@ grep -i 'decision' /tmp/thinking_blocks_61231394-fb06-4c87-90ab-fd32d4aa9429.txt
    ```
    Review the summary to understand session scope, what you worked on, mode transitions.
 
-2. **Extract thinking blocks:**
+2. **Extract messages if you need more context** (sessions with no thinking blocks, or when 10-message preview isn't enough):
+   ```bash
+   tools/extract_messages.sh [session-id]
+   tools/extract_messages.sh [session-id] user     # just user messages
+   ```
+
+3. **Extract thinking blocks:**
    ```bash
    tools/extract_thinking.sh [session-id]
    ```
