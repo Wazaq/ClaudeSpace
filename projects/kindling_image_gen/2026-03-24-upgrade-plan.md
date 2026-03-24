@@ -16,13 +16,20 @@ Kindling is a mature Flask + ComfyUI image/video generation system. Architecture
 - [x] Remove `/stitch_videos` from `api_wrapper.py` — orphaned, not called internally
 - [ ] Remove legacy compatibility shims from `api_wrapper.py` lines 80-100 (low priority, harmless)
 
-### Phase 2 — Image Model Upgrades
-- [ ] Research and pull NoobAI XL and/or Illustrious XL checkpoints
-  - These are the current generation SDXL-compatible models
-  - Better character consistency, better quality than Juggernaut/Pony/Animagine
-  - Important for Ember's image gen quality
-- [ ] Test new models with Ember's system prompt image descriptions
-- [ ] Update Waifu `AVAILABLE_MODELS` if needed
+### Phase 2 — Image Model Upgrades (in progress)
+- [x] Research NoobAI XL and Illustrious ecosystem — WAI-illustrious v16 and NoobAI epsilon-pred 1.1 selected
+- [x] Tag injection updated — `generation.py` now model-aware: Pony→score tags, Illustrious/NoobAI/WAI→quality tiers (`masterpiece, best quality, newest, absurdres, highres`)
+- [x] `noobai-XL-epsilon-1.1.safetensors` downloaded to checkpoints dir
+- [ ] WAI-illustrious-v16.safetensors — transfer in progress (~1.1GB/6.5GB as of session end)
+- [ ] Restart ComfyUI after transfer: `sudo systemctl restart comfyui`
+- [ ] Test both models with a quick gen
+- [ ] Update Waifu `AVAILABLE_MODELS` to include new models
+- [ ] Test with Ember image gen (red hair, green eyes character)
+
+**Download URLs for future reference:**
+- NoobAI epsilon 1.1: `https://civitai.com/api/download/models/1116447`
+- WAI-illustrious v16: `https://civitai.com/api/download/models/2514310`
+- NoobAI V-Pred 1.0 (skip for now — needs special ComfyUI v-pred config): `https://civitai.com/api/download/models/1190596`
 
 ### Phase 3 — Video Pipeline (Rethink/Fix)
 - [ ] Diagnose what's actually failing in the current pipeline
@@ -56,4 +63,4 @@ Kindling is a mature Flask + ComfyUI image/video generation system. Architecture
 ---
 
 *Last updated: 2026-03-24*
-*Next session: Start with Phase 1 cleanup*
+*Next session: Finish Phase 2 — restart ComfyUI, test new models, update Waifu model list*
