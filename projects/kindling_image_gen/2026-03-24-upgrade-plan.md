@@ -16,15 +16,18 @@ Kindling is a mature Flask + ComfyUI image/video generation system. Architecture
 - [x] Remove `/stitch_videos` from `api_wrapper.py` — orphaned, not called internally
 - [ ] Remove legacy compatibility shims from `api_wrapper.py` lines 80-100 (low priority, harmless)
 
-### Phase 2 — Image Model Upgrades (in progress)
+### Phase 2 — Image Model Upgrades ✓ DONE
 - [x] Research NoobAI XL and Illustrious ecosystem — WAI-illustrious v16 and NoobAI epsilon-pred 1.1 selected
 - [x] Tag injection updated — `generation.py` now model-aware: Pony→score tags, Illustrious/NoobAI/WAI→quality tiers (`masterpiece, best quality, newest, absurdres, highres`)
 - [x] `noobai-XL-epsilon-1.1.safetensors` downloaded to checkpoints dir
-- [ ] WAI-illustrious-v16.safetensors — transfer in progress (~1.1GB/6.5GB as of session end)
-- [ ] Restart ComfyUI after transfer: `sudo systemctl restart comfyui`
-- [ ] Test both models with a quick gen
-- [ ] Update Waifu `AVAILABLE_MODELS` to include new models
-- [ ] Test with Ember image gen (red hair, green eyes character)
+- [x] WAI-illustrious-v16.safetensors — transfer complete
+- [x] Restart ComfyUI — both models visible and generating
+- [x] Test both models — generating successfully
+
+**Note:** Both NoobAI and WAI-illustrious are anime/illustration-style models. ReaPony remains the primary model for realistic output. New models are good additions for anime-style work but don't replace ReaPony. If a realistic model upgrade is ever wanted, research Lustify or Pony Realism variants.
+
+- [ ] Update Waifu `AVAILABLE_MODELS` to include new models (low priority — anime style may not fit Waifu use case)
+- [ ] Test with Ember image gen — "show me" trigger doesn't reliably fire generate_image tool (separate issue)
 
 **Download URLs for future reference:**
 - NoobAI epsilon 1.1: `https://civitai.com/api/download/models/1116447`
@@ -63,4 +66,4 @@ Kindling is a mature Flask + ComfyUI image/video generation system. Architecture
 ---
 
 *Last updated: 2026-03-24*
-*Next session: Finish Phase 2 — restart ComfyUI, test new models, update Waifu model list*
+*Next session: Phase 3 — diagnose video pipeline failures*
