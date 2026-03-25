@@ -34,19 +34,24 @@ Kindling is a mature Flask + ComfyUI image/video generation system. Architecture
 - WAI-illustrious v16: `https://civitai.com/api/download/models/2514310`
 - NoobAI V-Pred 1.0 (skip for now — needs special ComfyUI v-pred config): `https://civitai.com/api/download/models/1190596`
 
-### Phase 3 — Video Pipeline (Rethink/Fix)
-- [ ] Diagnose what's actually failing in the current pipeline
-  - Is it the SVI latent chaining? The vision review loop? The stitching?
-  - Pull logs from a failed run and trace where it breaks down
-- [ ] Decide: fix the current pipeline or rebuild it cleaner
-  - The dual-UNET WAN 2.2 approach is still sound
-  - The complexity (planner → sampler → reviewer → retry → stitch) may be over-engineered for current use
-- [ ] Consider a simpler "just generate a video" path without the full autonomous pipeline for quick tests
+### Phase 3 — Video Pipeline ✓ DONE
+- [x] Root cause: dolphin-mixtral (26GB) + WAN FP16 (28GB) exceeded VRAM → RAM spill → stalling
+- [x] Switch conversational model to Omega (14GB) — better prose for WAN prompts too
+- [x] Download WAN 2.2 T2V FP8 dual-UNET models (high + low noise)
+- [x] Add `create_wan_t2v_22_workflow()` — dual-UNET FP8, matches I2V 2.2 pattern
+- [x] Add `_wait_for_ollama_unload()` — polls /api/ps before every ComfyUI transition
+- [x] Disable SVI latent chaining — anchor injection was fighting motion continuity
+- [x] Fix anchor injection: segments 2+ now use last frame of previous segment (not original preview)
+- [x] Restore `_run_video_generation()` accidentally removed in CogVideoX cleanup
+- [x] Rename service from `api-wrapper` to `kindling`
 
-### Phase 4 — LLM Stack Tuning
-- [ ] Evaluate if dolphin-mixtral is still the right choice for Kindling's planning/optimization
-  - Given what we learned today about model quality, may be worth testing Omega or Qwen3 for the planner role
-- [ ] Hardcoded WAN 2.2 model filenames in `workflow_builder.py` — make configurable
+**Result:** Genuine scene continuity across segments. Character walks, pauses, reaches — position and motion carry forward sequentially. 13 minutes for 25s/5-segment production, pure GPU.
+
+**Remaining:** Small hard cut at stitch boundaries — addressable with ffmpeg cross-fade
+
+### Phase 4 — LLM Stack Tuning ✓ DONE (as part of Phase 3)
+- [x] Omega replaces dolphin-mixtral as conversational/planning model
+- [ ] Hardcoded WAN 2.2 model filenames in `workflow_builder.py` — make configurable (low priority)
 
 ---
 
@@ -66,4 +71,4 @@ Kindling is a mature Flask + ComfyUI image/video generation system. Architecture
 ---
 
 *Last updated: 2026-03-24*
-*Next session: Phase 3 — diagnose video pipeline failures*
+*Status: All phases complete. Pipeline producing high quality video with scene continuity.*
