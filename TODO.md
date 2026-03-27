@@ -26,7 +26,7 @@
 
 ## Ember
 
-- [ ] **Image generation reliability** — she announces she's generating but sometimes nothing happens. Intermittent. Unclear if Discord or generation side. Needs investigation.
+- [x] **Image generation reliability** — fixed 2026-03-27. Missing `tool_call_id` in tool result messages meant Ollama couldn't match results back to calls. Model stopped calling tools after accumulating malformed history. 5/5 after fix.
 
 ---
 
