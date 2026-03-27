@@ -7,8 +7,8 @@
 
 ### UI Cleanup
 - [x] **Remove quick presets** from T2I — done 2026-03-27
-- [ ] **Evaluate Inpainting tab** — used maybe twice, may just be clutter
-- [ ] **Evaluate Video tab** — may be redundant now that Automation tab exists
+- [x] **Remove Inpainting tab** — done 2026-03-27, frontend + backend fully removed
+- [x] **Remove Video tab** — done 2026-03-27, frontend + backend fully removed
 - [x] **Sticky frames bug** — fixed 2026-03-27 (root cause: broken HTML structure, sub-panels were outside image-panel in DOM)
 
 ### Pipeline Features
@@ -20,7 +20,6 @@
 
 ### Curiosity / Research
 - [ ] **How do deepfakes work?** — educational deep dive, understand the tech
-- [ ] **Corn project** — figure out scope and what it ties into (Kindling pipeline? standalone?)
 
 ---
 
@@ -55,7 +54,7 @@
 
 ## Neural Swarm
 
-- [ ] **Evaluate shutting down email digest** — overwhelming and unhelpful, stopped looking at it
+- [x] **Disable morning digest** — done 2026-03-27, task commented out in bot.py. YNAB email processing unaffected.
 - [ ] **YNAB agent tweaks** — working well, no specific ideas yet. Revisit when something surfaces.
 - [ ] **New swarm idea** — no direction yet, explore when inspiration hits
 
