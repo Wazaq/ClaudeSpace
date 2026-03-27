@@ -1,54 +1,54 @@
 # Session Handoff — 2026-03-27
-*Updated mid-session. Pick up here.*
+*Updated end of afternoon session. Pick up here.*
 
 ---
 
-## What Was Built This Session
+## IN PROGRESS: Inpaint + Video Tab Removal
 
-### RIFE Frame Interpolation — Fixed & Working
-- **Bug fixed:** `VHS_VideoCombine` requires `pingpong` input — was missing, caused `prompt_id` KeyError
-- Fix in `workflow_builder.py` `create_rife_workflow()` — added `"pingpong": False`
-- Requires kindling service restart to take effect (ComfyUI doesn't need restart for code changes)
-- Tested on "I want to do a" (Miss Smith simple) — clean output, 32fps confirmed via ffprobe
-- Assassin production (a-female-assassin-in-a_716bfbf6) kicked off mid-session, likely done
+Backend is DONE and committed. Frontend (JS + HTML) still needs cutting.
 
-### Spot Visibility Cleanup — Done
-- `spot_discord.py` `_post_visibility_status()` was doing `str(result)[:120]` — dumped raw formatted file content into Discord
-- Fix: extract first non-empty line of result instead — gives clean summary header (e.g. `# spot_tools.py (1073 lines)`)
-- `spot-discord.service` restarted, fix live
+### Backend — DONE (committed 25a2ecf)
+- `workflow_builder.py`: `create_inpaint_workflow` removed
+- `generation.py`: `/inpaint`, `/generate_wan_video`, `/generate_wan_t2v` routes removed
+- KEPT: `_run_video_generation`, `video_status`, all WAN workflow functions (used by automation)
 
----
+### Frontend — TODO NEXT SESSION
 
-## Remaining TODO List
+**main.js** — remove these blocks:
+- Lines 125-127: `let inpaintImageData`, `let maskCanvas`, `let maskCtx` variables
+- Lines 386-500: `handleInpaintUpload` + all drawing functions (startDrawing, draw, stopDrawing, showBrushCursor, hideBrushCursor)
+- Lines 502-560ish: `clearMask`, `undoMask`, `toggleLineTool`
+- Lines 955-1050: `handleInpaintFormSubmit`
+- Line 1164: `UI.updateSliderDisplay('inpaint_loraStrength'...)`
+- Lines 1461, 1465, 1471: remove `'inpaint_model'` and `'inpaint_lora'` from dropdown init arrays
+- Line 1495: `inpaintForm` event listener
+- Lines 1516-1521: `inpaintUploadArea` and `clearMaskBtn` listeners
+- Lines 1595-1652: inpaint image loading block
+- Lines 1654-2006: ALL video tab handlers (CogVideoX, WAN I2V, WAN T2V) — everything from `// Video Generation` comment to end of file
 
-1. **Smart cascade regen** — when upstream changes, auto-regen downstream (deferred)
-2. **LoRA training pipeline** — long-term fix for character drift across many segments (not started)
+**index.html** — remove:
+- Line 31: `<div class="sub-tab" data-subtab="inpaint">🎨 Inpainting</div>`
+- Lines 269-373: `inpaint-subpanel` div (entire block, including `</div> <!-- end image-panel -->` is now at 375)
+- Line 21: `<div class="tab" data-tab="video">🎬 Video</div>`
+- Lines 862-1119ish: entire `video-panel` div
 
----
-
-## Key Architecture Notes
-
-**RIFE workflow:** Kindling builds it, ComfyUI executes it. Bug = Kindling code. Restart Kindling to pick up changes. ComfyUI doesn't need restart for workflow changes.
-
-**config.WAN_DEFAULT_NEGATIVE** — single source of truth for WAN negative prompt. Update here only.
-
-**ComfyUI custom nodes:** `ComfyUI-Frame-Interpolation` installed in `ComfyUI/custom_nodes/`. rife49.pth auto-downloads on first run (~60MB).
-
-**Spot service:** `spot-discord.service` (system-level, `sudo systemctl restart spot-discord`)
+**IMPORTANT:** Line numbers will shift after each edit — use Python script approach or read fresh before each cut.
 
 ---
 
-## Files Changed This Session
+## What Else Was Done This Session
 
-```
-kindling-image-gen/
-  app/services/workflow_builder.py   — pingpong fix in create_rife_workflow()
-  README.md                          — RIFE + cascade sections, Mar 27 history
-
-spot/
-  spot_discord.py                    — visibility first-line fix (line ~138)
-```
+- RIFE: pingpong fix, working end-to-end
+- Spot visibility: first-line fix, restarted
+- Kindling sticky frames: HTML structure fixed (sub-panels were outside image-panel)
+- Quick presets: removed
+- WazzieStocks: stopped + disabled
+- Ember image gen: tool_call_id fix, 5/5 success rate
+- Master TODO created: `/home/bdwatkin/ClaudeSpace/TODO.md`
 
 ---
 
-*Handoff updated 2026-03-27 mid-session. LoRA research next.*
+## Remaining TODO (open items)
+See `/home/bdwatkin/ClaudeSpace/TODO.md` for full list.
+
+*Handoff written at 7% context — session end forced. Resume with frontend JS+HTML cleanup.*
