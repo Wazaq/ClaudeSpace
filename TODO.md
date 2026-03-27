@@ -6,10 +6,10 @@
 ## Kindling Image Gen
 
 ### UI Cleanup
-- [ ] **Remove quick presets** from T2I — never used, likely outdated
+- [x] **Remove quick presets** from T2I — done 2026-03-27
 - [ ] **Evaluate Inpainting tab** — used maybe twice, may just be clutter
 - [ ] **Evaluate Video tab** — may be redundant now that Automation tab exists
-- [ ] **Sticky frames bug** — frames persist when they shouldn't (e.g. I2I box stays visible when switching to Inpainting, then Settings; T2I result stays after navigating away). Fix cleanup/reset on tab switch.
+- [x] **Sticky frames bug** — fixed 2026-03-27 (root cause: broken HTML structure, sub-panels were outside image-panel in DOM)
 
 ### Pipeline Features
 - [ ] **Smart cascade regen** — when upstream segment changes, auto-regen downstream segments
@@ -33,6 +33,7 @@
 ## Spot
 
 - [ ] **Get back to working sessions with Spot** — he's been heartbeating, needs actual use
+- [x] **Spot visibility fix** — done 2026-03-27, now shows first line of result only instead of raw content dump
 - [ ] **VISIBILITY_TOOLS review** — confirm the set is right after the first-line display fix. Observe in Discord.
 
 ---
@@ -48,7 +49,7 @@
 
 ## WazzieStocks
 
-- [ ] **Evaluate shutting it down** — good idea, not being used, burning Claude API. Stop the service.
+- [x] **Shut it down** — done 2026-03-27, both services stopped and disabled
 
 ---
 
@@ -66,4 +67,4 @@
 
 ---
 
-*Last updated: 2026-03-27*
+*Last updated: 2026-03-27 (morning session)*
