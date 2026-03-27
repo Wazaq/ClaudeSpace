@@ -1,115 +1,85 @@
-# Session Handoff — 2026-03-27 (end of evening session)
+# Session Handoff — 2026-03-27 (morning session)
 *Updated at session close. Pick up here.*
 
 ---
 
-## What Was Built Today
+## What Was Built Today (2026-03-27 morning)
 
-### Morning — Editing Pipeline Hardening
-All committed to master.
+### Completed TODOs
 
-**Bug fixes:**
-- Splice bug: `after = segs with id > replaces_seg_id` (was `>=`)
-- Bridge retry prompt: descriptive text instead of raw attribute numbers
-- Transition validation threshold: 2/5 (was 3/5)
-- Drift check: first-to-last cumulative comparison added
+**#4 CFG check** — verified, no changes needed.
+- WAN 2.1 I2V/T2V: cfg=6 ✅ (within 5-7 range)
+- WAN 2.2 I2V/T2V: cfg=3.5 ✅ (intentionally lower per community guidance)
 
-**Organization:**
-- New segments go in `productions/segments/{slug}/` per-production subdirs
-- `_discover_segments` checks subdir first, falls back to flat
-- forclaude export fires on restitches, named from video stem
-- Delete button on library cards
-- Library card videos capped at `max-height: 300px`
+**#3 Default negative prompt** — centralized + improved
+- New constant `config.WAN_DEFAULT_NEGATIVE` (one place to update going forward)
+- Merged WAN official Chinese defaults (static frame, frozen motion, backwards walking, three legs, crowded background)
+- Updated: `production_planner.py` (x2), `video_producer.py` fallback, `story_production.py` WAN segments
 
-**Character lock for seg 1 regen:**
-- `sample_last_frame` saved into plan JSON at production start
-- Seg 1 regen auto-uses it as I2V init; fallback to anchor; fallback to T2V
+**#2 ScriptMaster system prompt**
+- Added "ONE ACTION PER SEGMENT" rule to `generate_plan()` prompt
+- Added 4n+1 frame count formula with fast/slow action guidance
 
-**Regen UX:**
-- Plain English → Translate → SD prompt preview (dolphin-llama3:8b, ~5s)
-- Prompt + num_frames written back to plan JSON after regen
-- Elapsed timer on regen status
-- Character lock checkbox (checked by default for seg 2+, unchecked for seg 1)
-- Duration dropdown (2s–8s, 33–129 frames)
+**#1 Cascade appearance update**
+- New route: `POST /production/cascade_appearance/<plan_id>/from/<seg_id>`
+- Rewrites all downstream segment prompts with new character appearance using LLM
+- Batches of 4 to prevent LLM truncation on large productions
+- Frontend: purple "Cascade appearance to downstream segs →" button appears after translate
+- Updates segment cards in-place — no page reload needed
+- Shows warning if partial update detected
 
----
+**Bridge UI terminal state**
+- When all retries exhausted + validation still fails: `validation_exhausted` flag set
+- Frontend shows orange warning with remaining differences instead of green "complete"
+- Live validation display during polling no longer overwrites final result
 
-### Afternoon — Split-Regen + Library Cleanup
-All committed to master.
+**UX fixes**
+- Tab persistence across refresh (localStorage)
+- "Back to Library" now shows chat/story mode start screen (was showing nothing)
+- Segment cards scroll to relevant position after split-regen and bridge reloads
+- Fixed `switchTab()` to use `querySelector` instead of `event.target` (safe for programmatic calls)
 
-**Split-regen (core new feature):**
-- `translate_prompt` endpoint: switched to `huihui_ai/qwen3.5-abliterated:35b` via `/api/chat` with `think: false`. Returns `{segments: [{label, prompt}], translated_prompt}`. Detects multiple actions, splits automatically.
-- `translate_model` config key added (separate from `checklist_model`)
-- `start_split_regen` / `_run_split_regen` in `video_editor.py`: N segments generated sequentially with I2V chaining, uses `_splice_bridge_into_plan`, auto-restitches
-- New routes: `/production/split_regen/<plan_id>/segment/<seg_id>` and `/production/split_regen_status/<job_id>`
-- Frontend: shows breakdown, button label updates, progress "Generating segment X of N", auto-reloads edit view on complete
-
-**Character lock fix (both regen paths):**
-- Single-regen AND split-regen now both respect `use_init_from_prev` for seg 1
-- Unchecked = T2V from prompt only (enables appearance changes)
-
-**File naming fix:**
-- Split-regen files now named `{slug}_seg{N:02d}_{hex}.mp4` so `_discover_segments` finds them
-
-**Library dedup:**
-- `list_productions`: one entry per slug (newest file only)
-- `restitch_production`: deletes all previous versions for same slug after writing new file
-
-**Service hardening:**
-- `kindling.service`: added `ExecStartPre` to kill orphan on port 5000 before each start
-- Logs: `StandardOutput/Error=append:/tmp/kindling.log` (was api_wrapper.log)
-- Rate limiter: 2000/hr global default (was 200)
-
-**WAN research doc:** `projects/kindling_image_gen/WAN-best-practices.md`
+**RIFE 32fps interpolation**
+- Installed `ComfyUI-Frame-Interpolation` custom node + `cupy` dependency
+- `create_rife_workflow()` in workflow_builder.py: VHS_LoadVideoPath → RIFE VFI → VHS_VideoCombine
+- Background job: `start_interpolation()` / `get_interpolation_status()`
+- Routes: `POST /production/interpolate/<plan_id>`, `GET /production/interpolate_status/<id>`
+- Frontend: purple "RIFE 32fps" button in edit view toolbar
+- **First run will auto-download rife49.pth (~60MB)** — may take a moment
+- Output: `{slug}_interp_{ts}.mp4` in PRODUCTIONS_COMPLETED
 
 ---
 
-## Test Scene: Miss Smith Classroom
+## Remaining TODO List
 
-Production: `i-want-to-do-a_423ffeb9`
-
-Current state (4 segments, red hair teacher):
-1. Teacher looking down, writing on papers (T2V, red hair, char lock unchecked)
-2. Teacher smiling at camera (I2V from seg 1)
-3. Teacher sets papers down, stands up (I2V from seg 2) — split from original seg 3
-4. Teacher walks to whiteboard, writes "hello" (I2V from seg 3)
-
-Known issues with this production:
-- Hard cut between seg 2 (seated smiling) and seg 3 (standing) — bridge candidate
-- Camera framing inconsistency between segs (WAN picks its own composition) — fix with explicit framing keywords in prompts
-
----
-
-## Pending Work (prioritized)
-
-1. ~~**Bridge seg 2→3**~~ — **DONE** (Brent fixed with prompt update; no hard cut)
-2. **Cascade prompt update** — when appearance changes, downstream prompts still have old description. Currently manual workaround (edit textarea before regen).
-3. **ScriptMaster system prompt** — add "one action per beat" rule + frame count guidance (4n+1 formula, 81f sweet spot)
-4. **Default negative prompt** — update plan generation to use community WAN baseline
-5. **CFG check** in ComfyUI WAN workflows (should be 5-7, check current setting)
-6. **Smart handling on regen** — downstream cascade regens when upstream changes (Brent's deferred feature)
-7. **Bridge UI** — surface terminal state when all retries exhausted
-8. **Spot visibility cleanup** — `spot_discord.py` lines 118-145, raw tool results need delimiters/truncation
-9. **RIFE interpolation** — post-production 16fps→24fps (medium priority)
-10. **LoRA training pipeline** — long-term fix for character drift across many segments
+1. **Smart cascade regen** — when upstream changes, auto-regen downstream (Brent deferred)
+2. **Spot visibility cleanup** — `spot_discord.py:118-145`, raw tool results need delimiters/truncation
+3. **RIFE testing** — test the new button on a completed production; first run downloads model
+4. **LoRA training pipeline** — long-term fix for character drift across many segments
 
 ---
 
 ## Key Architecture Notes
 
-**Character lock logic:**
-- Seg 1 + char lock checked → I2V from `sample_last_frame` (appearance preserved)
-- Seg 1 + char lock unchecked → T2V (new character from prompt — use for appearance changes)
-- Seg N>1 + char lock checked → I2V from previous seg's last frame (chains appearance)
-- Seg N>1 + char lock unchecked → T2V (breaks chain intentionally)
+**config.WAN_DEFAULT_NEGATIVE** — single source of truth for WAN negative prompt.
+Merges English community baseline + WAN Chinese official defaults.
+Update here only.
 
-**Reasoning model note:** `huihui_ai/qwen3.5-abliterated:35b` puts JSON in `thinking` field when using `/api/generate`. Always use `/api/chat` with `"think": false` top-level parameter.
+**ComfyUI service:** `comfyui.service` (separate from `kindling` service)
+- Restart with: `sudo systemctl restart comfyui`
+- Custom nodes in: `ComfyUI/custom_nodes/`
+- Newly installed: `ComfyUI-Frame-Interpolation` (RIFE + 12 other VFI methods)
 
-**One action per segment:** WAN's hard rule. The translate endpoint enforces this. "Looks down, then looks up, then smiles" = 3 segments minimum.
+**Cascade appearance flow:**
+1. User translates segment intent → purple cascade button appears
+2. Click → LLM rewrites downstream prompts in batches of 4
+3. Segment card text updates in-place, no reload
+4. Warning shown if fewer segments returned than expected (click again to retry)
 
-**Library:** One completed file per production. Deduped by slug. Old versions deleted on restitch.
-
-**Orphan port:** `ExecStartPre` in kindling.service handles this automatically on restart. If manual kill needed: `ss -tlnp | grep 5000` → `kill -9 <pid>`.
+**RIFE workflow:**
+- `VHS_LoadVideoPath` (full path) → `RIFE VFI` (multiplier=2, rife49.pth, float16) → `VHS_VideoCombine` (32fps, h264-mp4)
+- Output lands in `sd_output/`, moved to `productions/completed/`
+- Does NOT delete the original 16fps version
 
 ---
 
@@ -117,38 +87,21 @@ Known issues with this production:
 
 ```
 kindling-image-gen/
-  app/routes/editing.py          — translate endpoint rewrite, split_regen routes
-  app/routes/production.py       — list_productions dedup
-  app/services/video_editor.py   — start_split_regen, _run_split_regen,
-                                   get_split_regen_status, restitch cleanup,
-                                   character lock fix (both regen paths)
-                                   BUG FIX (evening): stale lastframe init in split-regen
-  app/utils/rate_limiter.py      — 2000/hr default
-  config.py                      — translate_model key
-  static/js/production_editor.js — split-regen UI, segment breakdown display,
-                                   pollSplitRegenStatus, editTranslatedSegments state
-  README.md                      — major update (service name, editing pipeline,
-                                   split-regen, LLM stack, troubleshooting)
-/etc/systemd/system/kindling.service — ExecStartPre, log rename
+  config.py                          — WAN_DEFAULT_NEGATIVE constant
+  app/routes/editing.py              — cascade_appearance route, interpolate routes, bridge terminal state
+  app/routes/story_production.py     — use config.WAN_DEFAULT_NEGATIVE
+  app/services/production_planner.py — WAN_DEFAULT_NEGATIVE, one-action rule, 4n+1 guidance
+  app/services/video_producer.py     — use config.WAN_DEFAULT_NEGATIVE
+  app/services/video_editor.py       — bridge terminal state, start_interpolation, _run_interpolation
+  app/services/workflow_builder.py   — create_rife_workflow()
+  static/js/production_editor.js     — cascade UI, scroll restore, bridge terminal state, RIFE UI
+  static/js/ui.js                    — tab persistence (localStorage), switchTab fix
+  static/js/main.js                  — restore active tab on load
+  templates/index.html               — RIFE button
+ComfyUI/custom_nodes/
+  ComfyUI-Frame-Interpolation/       — newly installed RIFE node
 ```
-
-## Evening Session (2026-03-27) — Bug Fix
-
-**Stale lastframe bug in split-regen:** `_run_split_regen` was skipping lastframe extraction
-if the file already existed. If a previous version of a segment had been regenned, the cached
-lastframe was stale — causing WAN to use the wrong init frame and generate incorrect content.
-
-**Fix:** Always re-extract `seg{N}_lastframe.png` before using it as init for split-regen.
-If the segment file exists, extract fresh regardless of whether a cached lastframe is present.
-
-**Miss Smith test production** extended to 10 segments during testing. Character held well
-through ~7 segments before outfit drift. WAN walked her out the classroom door on segment 10
-(Brent's prompt). Production confirmed split-regen works correctly with fresh init frames.
-
-**Key insight:** Split-regen is open-ended (no target B frame) unlike bridge. WAN has more
-freedom to drift without a destination anchor. Better prompt discipline and explicit framing
-keywords help constrain this.
 
 ---
 
-*Handoff updated end of evening session. Bug fix committed to master. Kindling service running.*
+*Handoff written end of morning session 2026-03-27. All changes committed to master. Service running.*
