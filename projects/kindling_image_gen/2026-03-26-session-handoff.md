@@ -1,4 +1,4 @@
-# Session Handoff — 2026-03-26 (end of day)
+# Session Handoff — 2026-03-27 (end of evening session)
 *Updated at session close. Pick up here.*
 
 ---
@@ -82,7 +82,7 @@ Known issues with this production:
 
 ## Pending Work (prioritized)
 
-1. **Bridge seg 2→3** in Miss Smith production — hard cut from seated to standing
+1. ~~**Bridge seg 2→3**~~ — **DONE** (Brent fixed with prompt update; no hard cut)
 2. **Cascade prompt update** — when appearance changes, downstream prompts still have old description. Currently manual workaround (edit textarea before regen).
 3. **ScriptMaster system prompt** — add "one action per beat" rule + frame count guidance (4n+1 formula, 81f sweet spot)
 4. **Default negative prompt** — update plan generation to use community WAN baseline
@@ -122,6 +122,7 @@ kindling-image-gen/
   app/services/video_editor.py   — start_split_regen, _run_split_regen,
                                    get_split_regen_status, restitch cleanup,
                                    character lock fix (both regen paths)
+                                   BUG FIX (evening): stale lastframe init in split-regen
   app/utils/rate_limiter.py      — 2000/hr default
   config.py                      — translate_model key
   static/js/production_editor.js — split-regen UI, segment breakdown display,
@@ -131,6 +132,23 @@ kindling-image-gen/
 /etc/systemd/system/kindling.service — ExecStartPre, log rename
 ```
 
+## Evening Session (2026-03-27) — Bug Fix
+
+**Stale lastframe bug in split-regen:** `_run_split_regen` was skipping lastframe extraction
+if the file already existed. If a previous version of a segment had been regenned, the cached
+lastframe was stale — causing WAN to use the wrong init frame and generate incorrect content.
+
+**Fix:** Always re-extract `seg{N}_lastframe.png` before using it as init for split-regen.
+If the segment file exists, extract fresh regardless of whether a cached lastframe is present.
+
+**Miss Smith test production** extended to 10 segments during testing. Character held well
+through ~7 segments before outfit drift. WAN walked her out the classroom door on segment 10
+(Brent's prompt). Production confirmed split-regen works correctly with fresh init frames.
+
+**Key insight:** Split-regen is open-ended (no target B frame) unlike bridge. WAN has more
+freedom to drift without a destination anchor. Better prompt discipline and explicit framing
+keywords help constrain this.
+
 ---
 
-*Handoff written at session close. Everything committed and pushed to master. Kindling service running.*
+*Handoff updated end of evening session. Bug fix committed to master. Kindling service running.*
