@@ -56,7 +56,26 @@
 
 - [x] **Disable morning digest** — done 2026-03-27, task commented out in bot.py. YNAB email processing unaffected.
 - [ ] **YNAB agent tweaks** — working well, no specific ideas yet. Revisit when something surfaces.
+- [ ] **NSA: Etsy emails** — add Etsy email handling
+- [ ] **NSA: Jewel-Osco** — investigate $0.89 transaction (wrong amount? fee? fuel points?)
+- [ ] **NSA: Nicor Gas** — route to Capital One Venture One, not current account
+- [ ] **NSA: Torrid** — double tracking on ordered/arrived emails, same as Target issue
+- [ ] **NSA: Warby Parker** — add to skip/ignore list, paid via HSA
+- [ ] **Brent: update PS Store payment card** — still on Southwest, stop being a lazy ass
+- [ ] **NSA: Apple** — route to Capital One Venture One
+- [ ] **YNAB agent: exclude public dividends** — filter these out from processing
+- [ ] **YNAB agent: correct account assignment** — figure out how to put transactions on the right account
+- [ ] **YNAB agent: stop double tracking** — order placed, shipped, arrived all creating separate transactions. Pick one.
+- [ ] **YNAB agent: Target cleanup** — order placed, drive up ready, order cancelled = chaos. Consolidate or ignore interim statuses.
 - [ ] **New swarm idea** — no direction yet, explore when inspiration hits
+
+---
+
+## Claude Session History (Vector Search)
+
+- [ ] **Index JSONL session logs into vector DB** — embed user+assistant message pairs from `~/.claude/projects/*/` using nomic-embed-text (already running). Store in SQLite with session ID, timestamp, content.
+- [ ] **Build `/search-history` skill** — semantic search across all past sessions. Returns top-k matches as clean text (timestamp, session snippet, similarity score) — not raw dumps. Results inject directly into context.
+- [ ] **Decay on the vector index** — significance score per chunk, decay over time, evict low-significance entries from search index (source JSONL files stay on disk).
 
 ---
 
@@ -66,4 +85,4 @@
 
 ---
 
-*Last updated: 2026-03-27 (morning session)*
+*Last updated: 2026-03-28*
