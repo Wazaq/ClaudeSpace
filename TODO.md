@@ -26,6 +26,7 @@
 ## Ember
 
 - [x] **Image generation reliability** — fixed 2026-03-27. Missing `tool_call_id` in tool result messages meant Ollama couldn't match results back to calls. Model stopped calling tools after accumulating malformed history. 5/5 after fix.
+- [x] **Bot not responding** — fixed 2026-03-30. `.env` had a period and inline comment included in the model name value (`Qwen3.5:35b. ## Normal...`). Ollama returned 404. Fixed to `qwen3.5:35b`.
 
 ---
 
@@ -33,7 +34,7 @@
 
 - [ ] **Get back to working sessions with Spot** — he's been heartbeating, needs actual use
 - [x] **Spot visibility fix** — done 2026-03-27, now shows first line of result only instead of raw content dump
-- [ ] **VISIBILITY_TOOLS review** — confirm the set is right after the first-line display fix. Observe in Discord.
+- [x] **VISIBILITY_TOOLS review** — confirm the set is right after the first-line display fix. Observe in Discord.
 
 ---
 
@@ -73,8 +74,8 @@
 
 ## Claude Session History (Vector Search)
 
-- [ ] **Index JSONL session logs into vector DB** — embed user+assistant message pairs from `~/.claude/projects/*/` using nomic-embed-text (already running). Store in SQLite with session ID, timestamp, content.
-- [ ] **Build `/search-history` skill** — semantic search across all past sessions. Returns top-k matches as clean text (timestamp, session snippet, similarity score) — not raw dumps. Results inject directly into context.
+- [x] **Index JSONL session logs into vector DB** — done 2026-03-30. 8800+ chunks, nomic-embed-text, SQLite at `~/ClaudeSpace/tools/session-search/index.db`
+- [x] **Build `/search-history` skill** — done 2026-03-30. Semantic search, top-5 results, clean text output.
 - [ ] **Decay on the vector index** — significance score per chunk, decay over time, evict low-significance entries from search index (source JSONL files stay on disk).
 
 ---
@@ -85,4 +86,4 @@
 
 ---
 
-*Last updated: 2026-03-28*
+*Last updated: 2026-03-30*
