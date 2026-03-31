@@ -84,7 +84,7 @@ AI image/video generation system built on ComfyUI. Brent interacts via a Flask A
 
 | Node | Purpose |
 |------|---------|
-| `ComfyUI-Impact-Pack` | FaceDetailer, segmentation, SAM2 *(added 2026-03-31)* |
+| `ComfyUI-Impact-Pack` | FaceDetailer etc. — installed but FaceDetailer not yet wired in (see TODO) |
 | `ComfyUI-WanVideoWrapper` | WAN video generation |
 
 ---
@@ -102,11 +102,11 @@ Workflows are built programmatically in `workflow_builder.py` — ComfyUI never 
 | `create_wan_i2v_workflow()` | I2V | WAN 2.1, 14B, 480p |
 | *(WAN 2.2 variants)* | I2V/T2V | High/low noise variants in generation.py |
 
-### FaceDetailer Config (added 2026-03-31)
-- Detector: `face_yolov8m.pt` (YOLO, in `models/ultralytics/bbox/`)
-- Runs automatically — detects face then rerenders at 0.5 denoise if found
-- No face = image passes through unchanged
-- Applied to: SDXL and img2img workflows only (not Flux, not WAN)
+### FaceDetailer — NOT YET ACTIVE
+- Impact Pack installed (V8.28.2), `ultralytics` + `onnxruntime` pip packages installed
+- Blocker: `UltralyticsDetectorProvider` node doesn't exist in this Impact Pack version
+- Fix: update Impact Pack → `UltralyticsDetectorProvider` will exist → wire into SDXL + img2img workflows
+- See TODO for full context
 
 ---
 

@@ -12,6 +12,7 @@
 - [x] **Sticky frames bug** — fixed 2026-03-27 (root cause: broken HTML structure, sub-panels were outside image-panel in DOM)
 
 ### Pipeline Features
+- [ ] **FaceDetailer (face quality improvement)** — Impact Pack installed, but `UltralyticsDetectorProvider` node doesn't exist in current version (V8.28.2). Fix: update Impact Pack to a newer version that includes it, then add FaceDetailer nodes back to `create_sdxl_workflow` and `create_img2img_workflow` in `workflow_builder.py`. The YOLO model to use: `face_yolov8m.pt` in `models/ultralytics/bbox/`. ultralytics + onnxruntime pip packages already installed.
 - [ ] **Smart cascade regen** — when upstream segment changes, auto-regen downstream segments
 - [ ] **WAN aspect ratio investigation** — "I want to do a" came out boxed instead of widescreen. Understand why, prevent it.
 - [ ] **Add sounds** to video productions
