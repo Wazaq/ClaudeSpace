@@ -42,8 +42,8 @@ type: reference
 
 | Service | Project | Notes |
 |---------|---------|-------|
-| `kindling` | Kindling Image Gen | ComfyUI API wrapper on port 5000 |
-| `comfyui.service` | ComfyUI | Backend image engine |
+| `kindling` | Kindling Image Gen | Flask API wrapper on port 5000 — restart this for code changes |
+| `comfyui.service` | ComfyUI | Backend inference engine on port 8188 — **must also restart for new custom nodes, model changes, or anything ComfyUI loads at startup** |
 | `spot-discord` | Spot | Discord bot (always running) |
 | `spot-heartbeat.timer` | Spot | Daily noon heartbeat |
 | `spot-maintenance.timer` | Spot | Daily 3am memory decay |

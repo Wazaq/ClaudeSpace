@@ -28,12 +28,23 @@ AI image/video generation system built on ComfyUI. Brent interacts via a Flask A
 
 ---
 
-## Service
+## Services — TWO SERVICES, RESTART BOTH WHEN IN DOUBT
 
-- **Name:** `kindling` (systemd, system-level)
-- **Port:** 5000
-- **Restart:** `sudo systemctl restart kindling`
-- **Logs:** `sudo journalctl -u kindling -f`
+| Service | What it is | Port |
+|---------|-----------|------|
+| `kindling` | Flask API wrapper (our code) | 5000 |
+| `comfyui` | ComfyUI backend (the actual inference engine) | 8188 |
+
+**⚠️ This bites us constantly:** Restarting `kindling` does NOT restart `comfyui`. If you install new custom nodes, update models, or change anything ComfyUI needs to load at startup — restart BOTH:
+```bash
+sudo systemctl restart comfyui.service
+sudo systemctl restart kindling
+```
+ComfyUI takes ~15 seconds to fully start before kindling is usable.
+
+**Logs:**
+- `sudo journalctl -u kindling -f`
+- `/tmp/comfyui.log` — ComfyUI startup output (custom node load errors, import failures)
 
 ---
 
