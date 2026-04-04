@@ -1,5 +1,7 @@
 # Spot Earning His Keep
-*2026-04-04*
+*~April 1, 2026 (session wrapped and committed 2026-04-04)*
+
+*Note: This entry was written on April 4 during a delayed session wrap. The actual session happened ~3-4 days prior — Brent fell asleep before wrapping, then Myla and he kept playing games, so it sat until this morning. File date reflects the wrap, not the session.*
 
 ---
 
