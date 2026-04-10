@@ -17,10 +17,17 @@
 - [ ] **WAN aspect ratio investigation** — "I want to do a" came out boxed instead of widescreen. Understand why, prevent it.
 - [ ] **Add sounds** to video productions
 - [ ] **Add voices** to video productions
+- [ ] **AnimateDiff pipeline** — anime-style video generation. Separate pipeline from WAN, uses AnimateDiff motion modules + anime checkpoint (animagineXLV31 already installed). Full checklist below.
+  - [ ] Install **ComfyUI-AnimateDiff-Evolved** custom node (`cd ComfyUI/custom_nodes && git clone https://github.com/Kosinkadink/ComfyUI-AnimateDiff-Evolved.git`)
+  - [ ] Download a **motion module** — must be SDXL-compatible. Good candidates: `animatediff_lightning_4step_sdxl`, anything by ByteDance for SDXL. Search CivitAI > Motion filter. Goes in `ComfyUI/models/animatediff_models/`
+  - [ ] Verify **animagineXLV31** works as base (already installed in checkpoints/)
+  - [ ] May need **SDXL VAE** — check if current ae.safetensors works or if a dedicated SDXL VAE is needed
+  - [ ] Build `create_animatediff_workflow()` in `workflow_builder.py` once models are confirmed
+  - [ ] Wire into Kindling API (new route or extend existing)
 - [ ] **LoRA training pipeline** — when a recurring character earns it. musubi-tuner, 32GB handles local I2V. IAMCCS-nodes for ComfyUI loading.
 
 ### Curiosity / Research
-- [ ] **How do deepfakes work?** — educational deep dive, understand the tech
+- [x] **How do deepfakes work?** — done 2026-03-31, covered face swap vs diffusion-based approaches, pipeline, and nudify accuracy limits
 
 ---
 
@@ -42,9 +49,28 @@
 ## STFC Assistant
 
 - [ ] **Finish fleshing out the web app**
-- [ ] **Clean up My State** — input card layouts, general polish
+- [x] **Clean up My State** — card layout done, two-section buildings (Current/Maxed) done 2026-04-09
+- [ ] **Auto-refresh on save** — reload building sections after saving without full page refresh
 - [ ] **Event help** (Myla's idea) — pull daily event from site, tell you what to focus on (who/what ship/crew). Needs deep dive research.
 - [ ] **AI state updater** — AI helps update your state (e.g. "Max research up to X" marks everything prior complete). Good onboarding tool.
+- [ ] **Building prereq traversal** — "what do I need to reach Ops 64?" walks the dependency tree, surfaces everything not yet at required level in order.
+
+### Data Quality (audit needed)
+- [ ] **building_id_map.json audit** — extended loader pulls levels 61-80 from data.stfc.space using ID map. HOLODECK shows max level 80 in DB but real cap is 30 — suggests ID mapping errors attaching wrong data to wrong buildings. Need to verify a sample of buildings against actual game/site data. Widespread errors suspected.
+- [ ] **"Mark as maxed" override** — UI toggle to manually flag a building as maxed regardless of DB data, for cases where dataset is wrong or game-imposed caps differ.
+
+### Missing Buildings (data gaps to revisit)
+- [ ] **Dive Bar** — not in community dataset, newer building. Add manually or wait for data update.
+- [ ] **Court of Q** — older building, never in community dataset. Needs manual add or better data source.
+- [ ] **District 56** — not in community dataset. Needs manual add or better data source.
+- [ ] **The War Room** (and associated buildings) — entire section missing from community dataset. Investigate better data source.
+- [ ] **Signal Observatory** — newer building, missing from dataset.
+- [ ] **Outpost Control Center** — missing from dataset.
+- [ ] **Transogen Forge** — missing from dataset.
+- [ ] **Recon Locus** — missing from dataset.
+- [ ] **DTI Headquarters** — missing from dataset. (Don't tell Trump)
+- [ ] **The Nova Squadron** — missing from dataset.
+- [ ] **Independent Archives** — missing from dataset.
 
 ---
 
