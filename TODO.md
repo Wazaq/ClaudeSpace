@@ -86,15 +86,15 @@
 - [ ] **YNAB agent tweaks** — working well, no specific ideas yet. Revisit when something surfaces.
 - [ ] **NSA: Etsy emails** — add Etsy email handling
 - [ ] **NSA: Jewel-Osco** — investigate $0.89 transaction (wrong amount? fee? fuel points?)
-- [ ] **NSA: Nicor Gas** — route to Capital One Venture One, not current account
-- [ ] **NSA: Torrid** — double tracking on ordered/arrived emails, same as Target issue
+- [x] **NSA: Nicor Gas** — done 2026-04-10, dedicated rule routes to Venture One with Nicor/Gas category
+- [x] **NSA: Torrid** — done 2026-04-10, covered by order lifecycle skip patterns
 - [ ] **NSA: Warby Parker** — add to skip/ignore list, paid via HSA
-- [ ] **Brent: update PS Store payment card** — still on Southwest, stop being a lazy ass
+- [x] **Brent: update PS Store payment card** — done 2026-04-10
 - [ ] **NSA: Apple** — route to Capital One Venture One
 - [ ] **YNAB agent: exclude public dividends** — filter these out from processing
 - [ ] **YNAB agent: correct account assignment** — figure out how to put transactions on the right account
-- [ ] **YNAB agent: stop double tracking** — order placed, shipped, arrived all creating separate transactions. Pick one.
-- [ ] **YNAB agent: Target cleanup** — order placed, drive up ready, order cancelled = chaos. Consolidate or ignore interim statuses.
+- [x] **YNAB agent: stop double tracking** — done 2026-04-10. Added skip_subject_patterns for arriving/ready for pickup/drive-up/order update/preparing. Only order confirmation + refund emails create transactions.
+- [x] **YNAB agent: Target cleanup** — done 2026-04-10. Covered by drive-up ready + order status update patterns above.
 - [ ] **New swarm idea** — no direction yet, explore when inspiration hits
 
 ---
