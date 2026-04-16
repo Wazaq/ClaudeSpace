@@ -1,3 +1,4 @@
 # Brent's private share folder. Do not commit any files here.
 .brent/tools/session-search/index.db
 tools/session-search/indexer.log
+.brent/

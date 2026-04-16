@@ -14,6 +14,11 @@
 ### Pipeline Features
 - [ ] **FaceDetailer (face quality improvement)** — Impact Pack installed, but `UltralyticsDetectorProvider` node doesn't exist in current version (V8.28.2). Fix: update Impact Pack to a newer version that includes it, then add FaceDetailer nodes back to `create_sdxl_workflow` and `create_img2img_workflow` in `workflow_builder.py`. The YOLO model to use: `face_yolov8m.pt` in `models/ultralytics/bbox/`. ultralytics + onnxruntime pip packages already installed.
 - [ ] **Smart cascade regen** — when upstream segment changes, auto-regen downstream segments
+- [ ] **Auto-checkpoint anchoring** — for long productions, every N segments (configurable, default 3-4) explicitly reset the drift baseline by using the rendered last frame as the new anchor instead of always chaining back to the original sample. Prevents cumulative drift on 10+ segment productions. Currently doable manually via per-segment inits in edit view but needs automation.
+- [ ] **Segment init/final frame thumbnails** — show first and last frame of each segment as small thumbnails on the segment card during production. Lets you monitor character drift in real time without digging in sd_output. Keyframe extraction already exists (forclaude/), just needs an endpoint to serve per-segment first/last frames and UI to display them as cards complete.
+- [ ] **Visual prompt translator layer** — polish_prompt() pass between plan generation and ComfyUI submission. Takes human-readable emotional/narrative language ("feels happy") and converts to WAN-legible visual descriptors ("wide smile, bright eyes, slight head tilt, relaxed shoulders"). Focused system-prompted LLM call, comma-separated output, single clear action enforced. Fits in video_producer.py before segment send.
+- [ ] **VRAM monitoring / memory pressure indicator** — real-time VRAM usage display in the UI. Show current usage vs 32GB, warn when approaching limits (especially during dual-UNET WAN 2.2 workflows). pynvml or nvidia-smi polling. Good place: status bar or sidebar widget in the production UI.
+- [ ] **SQLite state persistence** — production sessions and plan state currently in-memory only, lost on restart. SQLite would let you resume an interrupted production, recover plan state after a crash, and review past session context. Low overhead for a single-user local system vs Redis.
 - [ ] **WAN aspect ratio investigation** — "I want to do a" came out boxed instead of widescreen. Understand why, prevent it.
 - [ ] **Add sounds** to video productions
 - [ ] **Add voices** to video productions
@@ -104,6 +109,15 @@
 - [x] **Index JSONL session logs into vector DB** — done 2026-03-30. 8800+ chunks, nomic-embed-text, SQLite at `~/ClaudeSpace/tools/session-search/index.db`
 - [x] **Build `/search-history` skill** — done 2026-03-30. Semantic search, top-5 results, clean text output.
 - [ ] **Decay on the vector index** — significance score per chunk, decay over time, evict low-significance entries from search index (source JSONL files stay on disk).
+
+---
+
+## Lens (Agentic Code Reviewer)
+
+- [ ] **followup.md log** — save full follow-up Q&A session to `reviews/<session>/followup.md` so conversations can be reviewed later or handed to Claude
+- [ ] **Increase minimum file reads** — 10 is a floor, but a configurable `--min-files` CLI arg would let you push deeper on larger projects
+- [ ] **Model roleplay bleed fix** — Omega outputs `<|im_end|><|im_start|>user` tokens when context gets long, injecting fake user turns. Strip these from streamed output.
+- [ ] **Post-review summary commit** — after a review session, auto-commit the review + scratch + notebook to the target project's repo as a dated review artifact
 
 ---
 
