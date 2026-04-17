@@ -20,6 +20,14 @@
 - [x] **VRAM monitoring / memory pressure indicator** — done 2026-04-15. pynvml (nvidia-ml-py) in status.py, progress bar in settings tab. Green/yellow/red at 60%/85%. Polls every 10s. Shows OS-level usage (includes ComfyUI process).
 - [ ] **SQLite state persistence** — production sessions and plan state currently in-memory only, lost on restart. SQLite would let you resume an interrupted production, recover plan state after a crash, and review past session context. Low overhead for a single-user local system vs Redis.
 - [x] **WAN aspect ratio investigation** — done 2026-04-15. Root cause: I2V workflow calls in _submit_segment never passed width/height, falling back to 512×512 defaults. Added `wan_video_width: 832` and `wan_video_height: 480` to config. All I2V and T2V calls now use config values.
+- [x] **Writer layer** — done 2026-04-16. Narrative script stage fires after sample approval. Uses `Beat N:` format; beat count determines segment count. Planner treats script as primary source.
+- [x] **Plan generation fix for large segment counts** — done 2026-04-16. format_json=False, brace-depth JSON extraction, timeout = max(180, segments × 25). Fixes failures on 7+ segment plans.
+- [x] **Crossfade stitching** — done 2026-04-16. stitch_segments() defaults to 0.4s xfade via ffmpeg, falls back to plain concat on failure. Softens hard cuts between segments.
+- [x] **Lightbox for thumbnails** — done 2026-04-16. Click any first/last frame thumbnail → full-size overlay. Escape or click to close.
+- [ ] **Checklist banned phrases update** — "PJ top pulls open" (Seg 1) and "standing up slowly" (Seg 2) slipped through filter. Add to `_CHECKLIST_BANNED_PHRASES` in `production_planner.py`.
+- [ ] **Scene chaining** — use a completed production's final frame to seed the next scene for longer-form story building. Not built yet.
+- [ ] **WAN 2.7 weights** — watch Wan-AI HuggingFace org; when weights drop, wire in subject referencing (first+last frame API already exists). Currently API-only.
+- [ ] **WAN 2.2 NSFW LoRAs** — Brent was browsing on HuggingFace, download to ComfyUI/models/loras/ when ready.
 - [ ] **Add sounds** to video productions
 - [ ] **Add voices** to video productions
 - [ ] **AnimateDiff pipeline** — anime-style video generation. Separate pipeline from WAN, uses AnimateDiff motion modules + anime checkpoint (animagineXLV31 already installed). Full checklist below.
