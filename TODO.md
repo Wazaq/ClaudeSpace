@@ -25,7 +25,7 @@
 - [x] **Crossfade stitching** — done 2026-04-16. stitch_segments() defaults to 0.4s xfade via ffmpeg, falls back to plain concat on failure. Softens hard cuts between segments.
 - [x] **Lightbox for thumbnails** — done 2026-04-16. Click any first/last frame thumbnail → full-size overlay. Escape or click to close.
 - [x] **Checklist banned phrases update** — done 2026-04-18. Added transitional motion phrases (pulls open, standing up, sitting down, etc.) to `_CHECKLIST_BANNED_PHRASES` in `production_planner.py`.
-- [ ] **Scene chaining** — use a completed production's final frame to seed the next scene for longer-form story building. Not built yet.
+- [x] **Scene chaining** — done 2026-04-18. `/production/chain/<id>` extracts last frame, seeds new session with `per_segment_inits={1: frame}`. "Chain New Scene" button on result screen. Segment 1 generates as I2V automatically via existing `run_production()` logic.
 - [ ] **WAN 2.7 weights** — watch Wan-AI HuggingFace org; when weights drop, wire in subject referencing (first+last frame API already exists). Currently API-only.
 - [ ] **WAN 2.2 NSFW LoRAs** — Brent was browsing on HuggingFace, download to ComfyUI/models/loras/ when ready.
 - [ ] **Add sounds** to video productions

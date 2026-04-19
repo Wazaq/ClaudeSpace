@@ -1,6 +1,6 @@
 # Kindling Image Generation — Project Reference
 
-*Last updated: 2026-03-31*
+*Last updated: 2026-04-18*
 
 ---
 
@@ -118,6 +118,35 @@ Workflows are built programmatically in `workflow_builder.py` — ComfyUI never 
 - Blocker: `UltralyticsDetectorProvider` node doesn't exist in this Impact Pack version
 - Fix: update Impact Pack → `UltralyticsDetectorProvider` will exist → wire into SDXL + img2img workflows
 - See TODO for full context
+
+---
+
+## Production Pipeline — Key Files
+
+| File | Purpose |
+|------|---------|
+| `app/routes/production.py` | All production endpoints (start, chat, plan, chain, resume, status) |
+| `app/services/video_producer.py` | `run_production()` — the main generation loop |
+| `app/services/production_planner.py` | Intent extraction, script, plan, checklist generation |
+| `app/services/job_store.py` | SQLite persistence (`productions/kindling_jobs.db`) |
+| `app/services/session_cache.py` | diskcache-based session storage (24h TTL) |
+| `static/js/production.js` | Frontend production UI state machine |
+| `templates/index.html` | All production phase HTML (chat/sample/script/plan/producing/result) |
+
+### Production Flow
+Chat → Intent → Quick Sample (optional) → Script (writer layer) → Plan → Generation → Review loop → Stitch → Result
+
+### Scene Chaining (done 2026-04-18)
+`POST /production/chain/<id>` — extracts last frame of completed video via `video_reviewer.extract_last_frame()`, saves to `productions/chains/`, seeds new session with `per_segment_inits={1: frame_path}`. Segment 1 auto-generates as I2V via existing `run_production()` logic. "Chain New Scene" button on result screen. Visually confirmed working — frame-to-frame continuity clean.
+
+### SQLite Persistence (done 2026-04-18)
+`productions/kindling_jobs.db` — persists job + segment state on every change. Interrupted jobs detected at startup. Resume banner in UI. Resume picks up from last `approved` or `needs_review` segment. **Bug fixed 2026-04-18:** `load_job()` was returning segments with `segment_id` key (DB column name) instead of `id` — caused `KeyError: 'id'` in `_persist_segment` on resume. Fixed by renaming in `load_job`.
+
+### Auto-Checkpoint Anchoring
+Every N segments (default 4, `auto_checkpoint_interval` in config), saves last frame as checkpoint and forces I2V from it at group boundaries. Prevents cumulative visual drift on long productions.
+
+### Checklist / Banned Phrases
+`_CHECKLIST_BANNED_PHRASES` in `production_planner.py` — includes transitional motion phrases (pulls open, standing up, sitting down, etc.). Checklist auto-fails segments missing character specifics (hair, eyes, body). **Known gap:** for chained segments, I2V init image provides the character spec — checklist shouldn't flag "unspecified" when a chain frame exists.
 
 ---
 
