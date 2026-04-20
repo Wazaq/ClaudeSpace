@@ -5,6 +5,11 @@
 
 ## Kindling Image Gen
 
+### Code Health (stabilize before adding more features)
+- [x] **Split `workflow_builder.py`** — done 2026-04-20. 1437 lines → 75-line turnstile + `app/services/workflows/sdxl.py`, `wan.py`, `flux.py`, `post_processing.py`. All 9 importers unchanged. Bonus: fixed `create_wan_i2v_22_svi_workflow` missing `return workflow` (was returning None in production).
+- [ ] **Audit `video_editor.py`** (1080 lines) — investigate whether it's mixing concerns (editing logic, file I/O, ffmpeg wrappers). Split by responsibility if so.
+- [ ] **Split `public.js`** (1557 lines) and **`main.js`** (1245 lines) — both frontend files getting unwieldy. Identify natural seams (e.g. LoRA handling, generation forms, UI state) and extract to separate modules. No bundler required — ES modules or simple script tags work fine.
+
 ### UI Cleanup
 - [x] **Remove quick presets** from T2I — done 2026-03-27
 - [x] **Remove Inpainting tab** — done 2026-03-27, frontend + backend fully removed
@@ -28,6 +33,8 @@
 - [x] **Scene chaining** — done 2026-04-18, improved 2026-04-20. Chain context inheritance (parent intent locked into writer/planner), `chained_from` DB field, "Merge with Parent" button, library Chain button, fuzzy slug matching, resume `prev_video_path` fix.
 - [ ] **WAN 2.7 weights** — watch Wan-AI HuggingFace org; when weights drop, wire in subject referencing (first+last frame API already exists). Currently API-only.
 - [ ] **WAN 2.2 NSFW LoRAs** — Brent was browsing on HuggingFace, download to ComfyUI/models/loras/ when ready.
+- [x] **LoRA scanner utility** — done 2026-04-20. `scan_loras.py` reads safetensors metadata + tensor keys to categorize by base model, detects HIGH/LOW pairs, flags missing partners. Run anytime to audit the collection.
+- [ ] **Multi-LoRA support** — workflow_builder.py currently wires in only a single LoRA node. Support a `loras: list[{name, strength}]` chain (nodes output feeds into next). Required for combining HIGH+LOW variant pairs and stacking effect LoRAs. API, production pipeline, and UI all need updates.
 - [ ] **Add sounds** to video productions
 - [ ] **Add voices** to video productions
 - [ ] **AnimateDiff pipeline** — anime-style video generation. Separate pipeline from WAN, uses AnimateDiff motion modules + anime checkpoint (animagineXLV31 already installed). Full checklist below.
@@ -138,4 +145,4 @@
 
 ---
 
-*Last updated: 2026-03-30*
+*Last updated: 2026-04-20*
