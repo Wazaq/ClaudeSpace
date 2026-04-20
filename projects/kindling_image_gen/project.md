@@ -136,11 +136,23 @@ Workflows are built programmatically in `workflow_builder.py` — ComfyUI never 
 ### Production Flow
 Chat → Intent → Quick Sample (optional) → Script (writer layer) → Plan → Generation → Review loop → Stitch → Result
 
-### Scene Chaining (done 2026-04-18)
-`POST /production/chain/<id>` — extracts last frame of completed video via `video_reviewer.extract_last_frame()`, saves to `productions/chains/`, seeds new session with `per_segment_inits={1: frame_path}`. Segment 1 auto-generates as I2V via existing `run_production()` logic. "Chain New Scene" button on result screen. Visually confirmed working — frame-to-frame continuity clean.
+### Scene Chaining (done 2026-04-18, improved 2026-04-20)
+`POST /production/chain/<id>` — extracts last frame, saves to `productions/chains/`, seeds new session with `per_segment_inits={1: frame_path}`. Segment 1 auto-generates as I2V.
+
+**Chain context inheritance (2026-04-20):** Parent intent (`characters`, `style`, `mood`, `scene`) now saved to DB as `intent_json` when a production starts. On chain, that intent is loaded and injected as locked "CONTINUATION CONTEXT" into both `extract_intent()` and `generate_narrative_script()` — writer and planner inherit the character spec automatically. Opening message tells the user what character they're continuing so they don't re-describe. `chained_from` field in `production_jobs` DB tracks lineage.
+
+**Merge with Parent (2026-04-20):** `POST /production/merge/<id>` stitches parent + child final videos into one MP4. "Merge with Parent" button on result screen (shown when `chained_from` is set — pulled from DB into status response). Button also available from library via "Chain" button on each card.
+
+**Library Chain button (2026-04-20):** Each library card with a completed video shows a "Chain" button. Calls chain endpoint and switches to production chat phase.
+
+**Library fuzzy slug matching (2026-04-20):** Plan file slug may be truncated differently from video filename. Now matches on the 8-char production ID suffix (e.g. `_4fef4813`) instead of exact stem match — fixes videos not appearing in library.
 
 ### SQLite Persistence (done 2026-04-18)
-`productions/kindling_jobs.db` — persists job + segment state on every change. Interrupted jobs detected at startup. Resume banner in UI. Resume picks up from last `approved` or `needs_review` segment. **Bug fixed 2026-04-18:** `load_job()` was returning segments with `segment_id` key (DB column name) instead of `id` — caused `KeyError: 'id'` in `_persist_segment` on resume. Fixed by renaming in `load_job`.
+`productions/kindling_jobs.db` — persists job + segment state on every change. Interrupted jobs detected at startup. Resume banner in UI. Resume picks up from last `approved` or `needs_review` segment.
+
+**`intent_json` column (2026-04-20):** Parent intent dict stored as JSON on job creation. Used by chain endpoint for context inheritance. DB migration runs on startup (ALTER TABLE IF NOT EXISTS pattern).
+
+**Resume `prev_video_path` fix (2026-04-20):** On interrupt+resume, `run_production()` now reconstructs `prev_video_path` from the last completed segment's filename on disk before starting the resumed segment. Previously, `init_from_previous` would silently skip (no prev path) causing T2V drift on the first resumed segment.
 
 ### Auto-Checkpoint Anchoring
 Every N segments (default 4, `auto_checkpoint_interval` in config), saves last frame as checkpoint and forces I2V from it at group boundaries. Prevents cumulative visual drift on long productions.
