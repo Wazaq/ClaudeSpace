@@ -11,6 +11,7 @@
 - [x] **Audit `video_editor.py`** — done 2026-04-21. Already split (turnstile + 5 modules in `editor/`). No action needed.
 - [x] **Extract `video_stitcher.py` from `video_producer.py`** — done 2026-04-21. `stitch_segments`, `_stitch_with_xfade`, `_get_video_duration` extracted to `app/services/video_stitcher.py`. `video_producer.py` and `production.py` updated to import from new module.
 - [x] **Move `simplify_checklist_for_validation` out of `automation.py`** — done 2026-04-21. Moved to `conversational_ai.py`. `automation.py` updated to import from there.
+- [ ] **Extract `translate_prompt` and `cascade_appearance` LLM logic from `editing.py`** — both routes inline raw Ollama API calls (~80 lines each). Same pattern as the checklist fix. Move to a service (likely a new `app/services/prompt_translator.py`).
 - [x] **Split `main.js`** — done 2026-04-20. 1245 → 1005 lines. Extracted `settings.js` (system status, settings load/save) and `ui-setup.js` (prompt improvement, image analysis, sliders). `public.js` skipped — public interface not actively in use.
 
 ### UI Cleanup
