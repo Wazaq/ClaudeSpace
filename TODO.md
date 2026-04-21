@@ -14,6 +14,18 @@
 - [ ] **Extract `translate_prompt` and `cascade_appearance` LLM logic from `editing.py`** — both routes inline raw Ollama API calls (~80 lines each). Same pattern as the checklist fix. Move to a service (likely a new `app/services/prompt_translator.py`).
 - [x] **Split `main.js`** — done 2026-04-20. 1245 → 1005 lines. Extracted `settings.js` (system status, settings load/save) and `ui-setup.js` (prompt improvement, image analysis, sliders). `public.js` skipped — public interface not actively in use.
 
+### Story Pipeline
+- [x] **Register editor routes** — already done. `editing_bp` imported and registered in `api_wrapper.py` lines 36+75. `editing.py` is fully implemented.
+- [x] **Script editing route** — already done. `generate_plan` accepts optional `script` override in body (line 318). Frontend shows script in editable textarea; `approveScript()` passes it to plan generation. Full round-trip works.
+- [ ] **Story Mode: narrative editing** — Story Mode only has 4 routes (start, chat, generate_preview, build_plan). No way to refine ScriptMaster output after the fact. Add `/story/edit_script` or allow re-chat before build_plan.
+- [ ] **Writer always generates 2 beats** — `generate_narrative_script()` consistently compresses to 2 beats regardless of prompt complexity. User always has to manually expand before plan generation. Investigate system prompt / LLM behavior in `production_planner.py`.
+- [ ] **Configurable script writer model** — Omega is great for adult content but steers toward it even when the prompt is atmospheric/narrative. Add a `script_writer_model` config key (separate from `conversational_model`) so a non-kink model can be used when you want normal output without Omega getting creative.
+- [ ] **Sample as visual contract** — approved sample prompt should be passed to the script writer as a style reference. Currently sample and production are unrelated; production ignores the sample's atmosphere/lighting/composition entirely. On sample approval, retrieve the prompt text from the job dict (via `session.sample_prompt_id`) and pass it to `generate_narrative_script()` and `generate_plan()` as a locked style anchor. If sample is skipped, use intent only as today.
+- [ ] **Character consistency validation** — vision model checks segment content against checklist but doesn't compare character appearance *across* segments. Add cross-segment appearance check in `video_reviewer.py` (compare S1 lock frame to each subsequent segment).
+- [x] **Persist production conversations** — already done. `session_cache.py` uses diskcache with 24h TTL, persisted to `.cache/sessions/`. Sessions survive restarts.
+- [ ] **SVI auto-enable** — Blocked: T5 encoder OOMs with dual-UNET fp8 scaled setup (~25GB UNETs + 6GB T5 > 32GB). Revisit if SVI workflow rewritten to use CLIPLoader instead of LoadWanVideoT5TextEncoder (which doesn't support fp8 scaled). `svi_mode` reverted to False 2026-04-21.
+- [x] **Prompt polish failure logging** — done 2026-04-21. Changed silent fallback to `log.warning` for both empty-response and exception cases in `_polish_prompt()`.
+
 ### UI Cleanup
 - [x] **Remove quick presets** from T2I — done 2026-03-27
 - [x] **Remove Inpainting tab** — done 2026-03-27, frontend + backend fully removed
