@@ -6,10 +6,10 @@
 ## Kindling Image Gen
 
 ### Code Health (stabilize before adding more features)
-- [ ] **Consistent logging system** — every session we burn tokens hunting for where kindling output is going (`/tmp/kindling.log`, `/tmp/api_wrapper.log`, journald — it changes). Build a simple logger in `app/services/logger.py` that writes to a fixed known path (e.g. `productions/kindling.log`), rotate on startup, and use it everywhere instead of print(). Add a `/logs` endpoint or tail endpoint so we can read it from the API too.
+- [x] **Consistent logging system** — done 2026-04-20. `app/services/logger.py` writes to `productions/kindling.log`, rotates to `.log.1` on startup, also writes to stderr (journald). 151 print() calls → log.info/warning/error/debug across 21 files. `/api/logs?lines=N` endpoint in status.py returns last N lines.
 - [x] **Split `workflow_builder.py`** — done 2026-04-20. 1437 lines → 75-line turnstile + `app/services/workflows/sdxl.py`, `wan.py`, `flux.py`, `post_processing.py`. All 9 importers unchanged. Bonus: fixed `create_wan_i2v_22_svi_workflow` missing `return workflow` (was returning None in production).
 - [ ] **Audit `video_editor.py`** (1080 lines) — investigate whether it's mixing concerns (editing logic, file I/O, ffmpeg wrappers). Split by responsibility if so.
-- [ ] **Split `public.js`** (1557 lines) and **`main.js`** (1245 lines) — both frontend files getting unwieldy. Identify natural seams (e.g. LoRA handling, generation forms, UI state) and extract to separate modules. No bundler required — ES modules or simple script tags work fine.
+- [x] **Split `main.js`** — done 2026-04-20. 1245 → 1005 lines. Extracted `settings.js` (system status, settings load/save) and `ui-setup.js` (prompt improvement, image analysis, sliders). `public.js` skipped — public interface not actively in use.
 
 ### UI Cleanup
 - [x] **Remove quick presets** from T2I — done 2026-03-27
