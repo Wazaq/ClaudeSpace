@@ -11,6 +11,7 @@
 - [x] **Audit `video_editor.py`** — done 2026-04-21. Already split (turnstile + 5 modules in `editor/`). No action needed.
 - [x] **Extract `video_stitcher.py` from `video_producer.py`** — done 2026-04-21. `stitch_segments`, `_stitch_with_xfade`, `_get_video_duration` extracted to `app/services/video_stitcher.py`. `video_producer.py` and `production.py` updated to import from new module.
 - [x] **Move `simplify_checklist_for_validation` out of `automation.py`** — done 2026-04-21. Moved to `conversational_ai.py`. `automation.py` updated to import from there.
+- [ ] **Organize sd_output directory** — all intermediate/raw ComfyUI output dumps into `sd_output/`, final videos go to completed folder. Intermediate files should be cleaned up or organized into a temp/working subdirectory so `sd_output/` doesn't accumulate indefinitely.
 - [ ] **Extract `translate_prompt` and `cascade_appearance` LLM logic from `editing.py`** — both routes inline raw Ollama API calls (~80 lines each). Same pattern as the checklist fix. Move to a service (likely a new `app/services/prompt_translator.py`).
 - [x] **Split `main.js`** — done 2026-04-20. 1245 → 1005 lines. Extracted `settings.js` (system status, settings load/save) and `ui-setup.js` (prompt improvement, image analysis, sliders). `public.js` skipped — public interface not actively in use.
 
@@ -18,12 +19,13 @@
 - [x] **Register editor routes** — already done. `editing_bp` imported and registered in `api_wrapper.py` lines 36+75. `editing.py` is fully implemented.
 - [x] **Script editing route** — already done. `generate_plan` accepts optional `script` override in body (line 318). Frontend shows script in editable textarea; `approveScript()` passes it to plan generation. Full round-trip works.
 - [ ] **Story Mode: narrative editing** — Story Mode only has 4 routes (start, chat, generate_preview, build_plan). No way to refine ScriptMaster output after the fact. Add `/story/edit_script` or allow re-chat before build_plan.
-- [ ] **Writer always generates 2 beats** — `generate_narrative_script()` consistently compresses to 2 beats regardless of prompt complexity. User always has to manually expand before plan generation. Investigate system prompt / LLM behavior in `production_planner.py`.
-- [ ] **Configurable script writer model** — Omega is great for adult content but steers toward it even when the prompt is atmospheric/narrative. Add a `script_writer_model` config key (separate from `conversational_model`) so a non-kink model can be used when you want normal output without Omega getting creative.
+- [x] **Writer always generates 2 beats** — fixed 2026-04-22. `total_duration_seconds` was hardcoded to 10 in intent JSON template (always 2 beats). Added `num_segments` field to intent extraction — model infers from conversation ("6 segments" → 6). Writer and planner both prefer `num_segments` over duration division. Validated: 6-beat script, 6-segment production, 28s clean run.
+- [x] **Configurable script writer model** — done 2026-04-22. Added `script_writer_model` key to `AUTONOMOUS_WORKFLOW` in config.py (defaults to None = use conversational_model). Set to e.g. `'qwen3.5:35b'` for non-kink productions. Writer logs which model it's using.
 - [ ] **Sample as visual contract** — approved sample prompt should be passed to the script writer as a style reference. Currently sample and production are unrelated; production ignores the sample's atmosphere/lighting/composition entirely. On sample approval, retrieve the prompt text from the job dict (via `session.sample_prompt_id`) and pass it to `generate_narrative_script()` and `generate_plan()` as a locked style anchor. If sample is skipped, use intent only as today.
-- [ ] **Character consistency validation** — vision model checks segment content against checklist but doesn't compare character appearance *across* segments. Add cross-segment appearance check in `video_reviewer.py` (compare S1 lock frame to each subsequent segment).
+- [x] **Character consistency validation** — done 2026-04-21. `review_segment()` accepts optional `reference_frame`; when provided, prepends it to the vision model images and adds a consistency checklist item. `video_producer.py` locks S1's first frame after approval and passes it to all subsequent segment reviews.
 - [x] **Persist production conversations** — already done. `session_cache.py` uses diskcache with 24h TTL, persisted to `.cache/sessions/`. Sessions survive restarts.
 - [ ] **SVI auto-enable** — Blocked: T5 encoder OOMs with dual-UNET fp8 scaled setup (~25GB UNETs + 6GB T5 > 32GB). Revisit if SVI workflow rewritten to use CLIPLoader instead of LoadWanVideoT5TextEncoder (which doesn't support fp8 scaled). `svi_mode` reverted to False 2026-04-21.
+- [x] **ComfyUI OOM kills** — fixed 2026-04-22. Root cause: qwen3-vl (vision reviewer) stayed loaded in Ollama VRAM during next segment generation. Added `_unload_vision_model()` call after every `review_segment()` in `video_producer.py`. Validated: 6-segment run, no interruptions.
 - [x] **Prompt polish failure logging** — done 2026-04-21. Changed silent fallback to `log.warning` for both empty-response and exception cases in `_polish_prompt()`.
 
 ### UI Cleanup
@@ -76,6 +78,7 @@
 
 ## Spot
 
+- [ ] **Research using Spot with OpenClaw** — investigate integration/usage
 - [ ] **Get back to working sessions with Spot** — he's been heartbeating, needs actual use
 - [x] **Spot visibility fix** — done 2026-03-27, now shows first line of result only instead of raw content dump
 - [x] **VISIBILITY_TOOLS review** — confirm the set is right after the first-line display fix. Observe in Discord.
