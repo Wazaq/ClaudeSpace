@@ -66,6 +66,7 @@
 
 ### Curiosity / Research
 - [x] **How do deepfakes work?** — done 2026-03-31, covered face swap vs diffusion-based approaches, pipeline, and nudify accuracy limits
+- [ ] **Narrative prompting experiment** — Kindroid uses pure prose prompts (mood, atmosphere, sensory detail, no SD keywords) and gets strong results. Test: strip the keyword boilerplate from Kindling's prompt polisher and let the LLM write narrative-style instead. Compare output quality. Hypothesis: narrative density may translate better to WAN's video generation than technical keyword lists.
 
 ---
 
@@ -164,4 +165,4 @@
 
 ---
 
-*Last updated: 2026-04-20*
+*Last updated: 2026-04-23*
