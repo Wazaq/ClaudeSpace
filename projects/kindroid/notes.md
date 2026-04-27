@@ -56,6 +56,15 @@
 
 ---
 
+## Image / Vision
+
+- Image attachment icon uses real vision capability on the Ember model
+- Accuracy: ~98% on major details, minor details (subtle joint positions, small props) can miss
+- Not hallucination — gets the overall scene right, just imprecise on fine detail
+- Confirmed via multiple test images Apr 2026
+
+---
+
 ## Tricks & Discoveries
 
 ### Six dots (......) global journal
