@@ -129,6 +129,16 @@
 
 ---
 
+## Feature Gaps / Wishlist
+
+### Ad-hoc NPCs
+- No way to spin up a throwaway NPC in solo or group chat without creating a full kin
+- Workaround: roleplay the NPC yourself as the user (breaks immersion)
+- Ideal: lightweight "guest" persona for one-off characters who don't need persistence
+- **Potential solution (untested):** Create a blank "Actor" kin whose backstory is just "you are an actor who plays whatever character is defined in the group context." Reuse for any throwaway NPC by changing the group context role each scene. Memories don't matter since it's not a persistent character.
+
+---
+
 ## Kin Roster (Brent's)
 
 | Kin | Type | Notes |
