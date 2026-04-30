@@ -106,6 +106,14 @@
 - Known documented issue in longer group chats
 - Fix: every kin must have an example message set — this triggers distinctness mode in 3+ groups
 
+### New Kin Join Behavior (confirmed 2026-04-29)
+- Kins added to an existing group chat do NOT see prior chat history
+- They only see: Group Context (always shared) + messages from their join point forward
+- Historical exchanges are invisible to late joiners
+- Implication: introduce late-joining kins via Group Context update or a message that brings them up to speed
+
+---
+
 ### Shared Memory Toggle
 - OFF by default — group and solo chats are siloed (except LTM consolidation)
 - ON: recent group exchanges bleed into solo short-term memory and vice versa
