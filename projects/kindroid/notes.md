@@ -8,10 +8,10 @@
 
 ### Memory Layers (Standard Tier)
 - **Backstory** (500 chars): Always in context. Core identity + relationship. Lean is critical — every char eats short-term context.
-- **Response Directive** (250 chars): Highest priority, processed first. Positive framing only ("vary descriptions" not "don't repeat X"). Max 2-3 rules or causes looping.
+- **Response Directive** (250 chars): Highest priority, processed first. Positive framing only ("vary descriptions" not "don't repeat X"). Max 2-3 rules or causes looping. **Write in natural language, not LLM instruction style** — "when X happens, do Y" not "you must always Z". The model responds to conversational framing better than directive commands.
 - **Key Memories** (1000 chars): Persistent facts. Good for relationship history and things she should always know.
 - **Example Message** (750 chars): Trains voice and tone. Audit carefully — any phrase here gets template-mined and repeated verbatim.
-- **Journal Entries** (500 chars each, keyphrase-triggered): Fires when USER types the keyphrase. Must be words the user would naturally say. Max 3 individual + 3 global recalled per message.
+- **Journal Entries** (500 chars each, keyphrase-triggered): Fires when USER types the keyphrase. Must be words the user would naturally say. Max 3 individual + 3 global recalled per message. **Write as natural scene instruction, not LLM directive** — "continue the scene from your own perspective" not "you must not acknowledge the signal". Clinical/command phrasing causes the model to interpret ambiguously and drift.
 - **Cascaded Memory**: Subscriber-only. Summarized history spanning hundreds to thousands of messages.
 - **Long-term Memory**: Infinite for all users. Retrieval-based, automatic consolidation.
 
