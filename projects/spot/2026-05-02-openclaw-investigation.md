@@ -121,6 +121,8 @@ Fix: `HEARTBEAT_TOOLS` is now a purpose-built 6-tool set: `query_memory`, `query
 - [x] Fallback messages bug fixed
 - [x] Manual test successful — Spot used tools and produced real output
 - [x] Posted to Discord heartbeat channel
+- [x] Two-step inference implemented and working
+- [x] Final test: Spot ran real memory audit, found 100/100 capacity, 22 archived heartbeat logs, correctly decided no evictions needed
 - [ ] Check spot-heartbeat.timer — is it actually firing on schedule?
 - [ ] Monitor next scheduled heartbeat post
 
