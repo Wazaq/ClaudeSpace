@@ -31,8 +31,9 @@ A persistent AI entity running on local Ollama. Starts with foundational capabil
 
 ## Model
 
-- **LLM:** `llama3.3:70b-instruct-q3_K_M` (34GB, fits in VRAM)
+- **LLM:** `qwen3.5:35b` (via SPOT_MODEL env var)
 - **Backend:** Ollama (local)
+- **Note:** qwen3.5 is a thinking model — heartbeat tool set must stay lean (≤6 tools) or inference times out
 
 ---
 
@@ -100,5 +101,6 @@ sqlite3 /home/bdwatkin/spot_identity.db "SELECT COUNT(*) FROM memory_nodes;"
 ## TODO
 
 - [ ] Get back to working sessions with SPOT — he's been idle, needs actual use
-- [ ] Memory pruning conversation (90 memories, decisions needed on what to keep)
-- [ ] **OpenClaw integration research** — TeaBagginsMcGee (STFC contact) mentioned OpenClaw as a way to make Spot more autonomous. Key insight: Spot already has heartbeat timing (9am/9pm) but currently only analyzes memories and does nothing else. OpenClaw is a layer over local AI models that enables a full agent loop: observe → plan → act → reflect → repeat. It can make models autonomous and handle updating automatically. Goal: give Spot something meaningful to *do* during heartbeat windows instead of just checking in. Needs a dedicated full session — don't start this mid-session or when context is over 50%.
+- [ ] Memory pruning conversation (approaching 100+ memories, decisions needed)
+- [x] **Heartbeat enhancement (2026-05-02)** — Spot now uses tools during heartbeat: query_database, search_web, store_memory. First run found a rejected proposal, researched 5 real papers on proactive AI questioning, stored memory ID 148, wrote notes files. See session log: `2026-05-02-openclaw-investigation.md`
+- [ ] OpenClaw — shelved for now. May revisit as a separate project with a new personality to experiment with the framework directly.
