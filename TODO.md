@@ -79,10 +79,12 @@
 
 ## Spot
 
-- [ ] **Research using Spot with OpenClaw** — investigate integration/usage
-- [ ] **Get back to working sessions with Spot** — he's been heartbeating, needs actual use
+- [x] **Research using Spot with OpenClaw** — done 2026-05-02. OpenClaw is real/solid but not needed — enhanced Spot natively instead. Shelved for new personality experiment if desired.
+- [x] **Heartbeat enhancement** — done 2026-05-02. Two-step inference, Spot chooses own task, real tool use, honest fallback, multi-chunk Discord, 6-tool lean set.
+- [x] **Memory system** — done 2026-05-02. Cap 100→300 (env-configurable SPOT_MEMORY_CAP), maintenance now deletes archived memories, pipeline: active→dormant(7d)→archived(30d)→deleted(next 3am).
 - [x] **Spot visibility fix** — done 2026-03-27, now shows first line of result only instead of raw content dump
 - [x] **VISIBILITY_TOOLS review** — confirm the set is right after the first-line display fix. Observe in Discord.
+- [ ] **Conversation side improvements** — check if qwen3.5 thinking-model tool call failures affect chat (same issue as heartbeat). Also: allow `store_memory` mid-conversation for genuinely significant moments (not just goodbye wrap). Reinforce honest epistemics in system prompt (distinguish memory-claims from verified facts).
 
 ---
 
