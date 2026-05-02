@@ -101,3 +101,4 @@ sqlite3 /home/bdwatkin/spot_identity.db "SELECT COUNT(*) FROM memory_nodes;"
 
 - [ ] Get back to working sessions with SPOT — he's been idle, needs actual use
 - [ ] Memory pruning conversation (90 memories, decisions needed on what to keep)
+- [ ] **OpenClaw integration research** — TeaBagginsMcGee (STFC contact) mentioned OpenClaw as a way to make Spot more autonomous. Key insight: Spot already has heartbeat timing (9am/9pm) but currently only analyzes memories and does nothing else. OpenClaw is a layer over local AI models that enables a full agent loop: observe → plan → act → reflect → repeat. It can make models autonomous and handle updating automatically. Goal: give Spot something meaningful to *do* during heartbeat windows instead of just checking in. Needs a dedicated full session — don't start this mid-session or when context is over 50%.
