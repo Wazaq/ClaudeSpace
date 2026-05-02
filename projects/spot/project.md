@@ -88,13 +88,13 @@ sqlite3 /home/bdwatkin/spot_identity.db "SELECT COUNT(*) FROM memory_nodes;"
 
 ---
 
-## Current Status (2026-03-31)
+## Current Status (2026-05-02)
 
 - Phase 9 complete — full Discord conversational interface
-- ~90/100 memories (approaching cap — will need pruning decisions soon)
-- Heartbeat working, posting to #spot daily
-- Visibility fix applied 2026-03-27 (first-line display only, no raw dumps)
-- Needs actual use — has been in heartbeat-only mode
+- 78/300 memories after cleanup (was 100/100 CRITICAL — all archived heartbeat logs purged)
+- Heartbeat now autonomous: two-step inference, Spot chooses his own task, uses real tools
+- Memory pipeline working: active → dormant (7d) → archived (30d) → deleted (3am)
+- Cap raised 100→300, env-configurable via SPOT_MEMORY_CAP
 
 ---
 
