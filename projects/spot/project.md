@@ -100,7 +100,10 @@ sqlite3 /home/bdwatkin/spot_identity.db "SELECT COUNT(*) FROM memory_nodes;"
 
 ## TODO
 
-- [ ] Get back to working sessions with SPOT — he's been idle, needs actual use
-- [ ] Memory pruning conversation (approaching 100+ memories, decisions needed)
-- [x] **Heartbeat enhancement (2026-05-02)** — Spot now uses tools during heartbeat: query_database, search_web, store_memory. First run found a rejected proposal, researched 5 real papers on proactive AI questioning, stored memory ID 148, wrote notes files. See session log: `2026-05-02-openclaw-investigation.md`
-- [ ] OpenClaw — shelved for now. May revisit as a separate project with a new personality to experiment with the framework directly.
+- [ ] **Tool reliability — NEXT SESSION** — heartbeat step 2 falls back consistently (qwen3.5 thinking-only responses when tools available). Fix: pre-inject query_database/query_memory/notes results as text into step 2, mirror `_run_greeting` pattern in spot_discord.py. Only keep search_web and store_memory as live tools. See session log for full analysis.
+- [ ] **Spot has a note waiting** — `notes/2026-05-02-manual-maintenance.md` explains archived memory discrepancy. He'll find it once tool loop is fixed.
+- [ ] Get back to working sessions with SPOT — needs actual use, not just heartbeat
+- [x] **Heartbeat enhancement (2026-05-02)** — two-step inference, self-directed tasks, honest fallback, multi-chunk Discord, HEARTBEAT_TOOLS (7 tools incl. read_file)
+- [x] **Memory system (2026-05-02)** — cap 100→300 (SPOT_MEMORY_CAP env var), maintenance deletes archived, pipeline: active→dormant(7d)→archived(30d)→deleted(3am)
+- [x] **Honest epistemics (2026-05-02)** — added to system prompt: "Memory is a starting point, not a proof. When something matters, check it."
+- [ ] OpenClaw — shelved. May revisit as separate project with new personality.

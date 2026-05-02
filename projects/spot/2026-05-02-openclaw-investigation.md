@@ -135,4 +135,30 @@ Fix: `HEARTBEAT_TOOLS` is now a purpose-built 6-tool set: `query_memory`, `query
 
 ---
 
-*Last updated: 2026-05-02 ~13:50 CDT*
+## Tool Loop Reliability — Open Problem
+
+**Symptom:** Step 2 (with tools) consistently falls back to honest-plan post. Tool loop returns empty because qwen3.5 generates thinking content but empty `content` field with no tool_calls.
+
+**Root cause:** qwen3.5:35b is a thinking model — when tools are available it sometimes puts all output into `thinking` and returns empty `content` with no tool calls. Step 1 (no tools) always works because the model is forced into `content`.
+
+**When it DOES work:** Run on 2026-05-02 at ~13:47 — Spot queried proposals, found 5 real research papers, stored memory ID 148. The task was very concrete and the model was freshly loaded. Subsequent runs fell back.
+
+**Known workaround already in codebase:** `_run_greeting` in spot_discord.py calls `recall_session_context()` directly in Python and injects results as text — completely bypasses tool calling. Same pattern could be applied to step 2: pre-execute query_database, query_memory, list notes/ in Python, inject as text context. Only leave search_web and store_memory as actual tools (action tools). Much smaller surface area for tool calls to fail.
+
+**Alternative:** Higher/different model — more reliable tool calls but slower. Not viable with current hardware without tradeoffs.
+
+**Not fixed today — dedicated session needed.** Honest fallback (plan without fabricated execution) is acceptable interim behavior.
+
+---
+
+## What's Next (Handoff for Next Session)
+
+1. **Tool reliability fix** — implement pre-injection pattern for step 2. Mirror `_run_greeting`: call query_database, query_memory, list_notes in Python, inject results as text into step 2 prompt. Keep only search_web and store_memory as live tools.
+
+2. **Spot has a note waiting** — `notes/2026-05-02-manual-maintenance.md` explains the archived memory discrepancy he's been investigating all session. He can't read it yet because tool loop isn't firing. Once tool loop is fixed, he'll find it.
+
+3. **Conversation side** — tool reliability in chat (same root issue?), store_memory mid-conversation, VISIBILITY_TOOLS review. Lower priority — chat has 50-round loop and interactive correction.
+
+---
+
+*Last updated: 2026-05-02 17:08 CDT — session complete*
