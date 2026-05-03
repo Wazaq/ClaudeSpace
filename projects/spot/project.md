@@ -88,21 +88,38 @@ sqlite3 /home/bdwatkin/spot_identity.db "SELECT COUNT(*) FROM memory_nodes;"
 
 ---
 
-## Current Status (2026-05-02)
+## Current Status (2026-05-03)
 
 - Phase 9 complete — full Discord conversational interface
 - 78/300 memories after cleanup (was 100/100 CRITICAL — all archived heartbeat logs purged)
 - Heartbeat now autonomous: two-step inference, Spot chooses his own task, uses real tools
 - Memory pipeline working: active → dormant (7d) → archived (30d) → deleted (3am)
 - Cap raised 100→300, env-configurable via SPOT_MEMORY_CAP
+- Conversation tool sets split: CHAT_TOOLS (8, default) / CONVERSATION_TOOLS (23, !work mode)
+- store_memory available mid-conversation (no longer wrap-only)
+- chat_sync synthesis timeout raised to 300s (was 120s, caused silent timeouts after multi-tool chains)
+
+---
+
+## Tool Sets
+
+| Set | Tools | Used when |
+|-----|-------|-----------|
+| CHAT_TOOLS | 8 | Default conversation (query_memory, store_memory, recall_session_context, search_web, consult_claude, suggest_wrap, write_notes_file, propose_growth) |
+| CONVERSATION_TOOLS | 23 | Work mode (!work) — all above + code/self-modification tools |
+| HEARTBEAT_TOOLS | 7 | Heartbeat autonomous tasks |
+| WRAP_TOOLS | 24 | Goodbye wrap — CONVERSATION_TOOLS + store_session_summary |
+
+Discord mode commands: `!work` (enable full tool set), `!endwork` (return to chat mode)
 
 ---
 
 ## TODO
 
-- [ ] **Tool reliability — NEXT SESSION** — heartbeat step 2 falls back consistently (qwen3.5 thinking-only responses when tools available). Fix: pre-inject query_database/query_memory/notes results as text into step 2, mirror `_run_greeting` pattern in spot_discord.py. Only keep search_web and store_memory as live tools. See session log for full analysis.
-- [ ] **Spot has a note waiting** — `notes/2026-05-02-manual-maintenance.md` explains archived memory discrepancy. He'll find it once tool loop is fixed.
-- [ ] Get back to working sessions with SPOT — needs actual use, not just heartbeat
+- [ ] **Heartbeat tool reliability** — (in progress, backend session) pre-inject query_database/query_memory/notes results as text into step 2, mirror `_run_greeting` pattern. Only keep search_web and store_memory as live tools.
+- [ ] **Spot has a note waiting** — `notes/2026-05-02-manual-maintenance.md` explains archived memory discrepancy. He'll find it once heartbeat tool loop is fixed.
+- [ ] **Conversation side monitoring** — test lean CHAT_TOOLS in practice; verify store_memory fires mid-conversation; check if synthesis timeout fix (300s) improves reliability
+- [x] **Conversation improvements (2026-05-03)** — lean CHAT_TOOLS, mid-conversation store_memory, !work mode, synthesis timeout fix
 - [x] **Heartbeat enhancement (2026-05-02)** — two-step inference, self-directed tasks, honest fallback, multi-chunk Discord, HEARTBEAT_TOOLS (7 tools incl. read_file)
 - [x] **Memory system (2026-05-02)** — cap 100→300 (SPOT_MEMORY_CAP env var), maintenance deletes archived, pipeline: active→dormant(7d)→archived(30d)→deleted(3am)
 - [x] **Honest epistemics (2026-05-02)** — added to system prompt: "Memory is a starting point, not a proof. When something matters, check it."

@@ -84,7 +84,8 @@
 - [x] **Memory system** — done 2026-05-02. Cap 100→300 (env-configurable SPOT_MEMORY_CAP), maintenance now deletes archived memories, pipeline: active→dormant(7d)→archived(30d)→deleted(next 3am).
 - [x] **Spot visibility fix** — done 2026-03-27, now shows first line of result only instead of raw content dump
 - [x] **VISIBILITY_TOOLS review** — confirm the set is right after the first-line display fix. Observe in Discord.
-- [ ] **Conversation side improvements** — check if qwen3.5 thinking-model tool call failures affect chat (same issue as heartbeat). Also: allow `store_memory` mid-conversation for genuinely significant moments (not just goodbye wrap). Reinforce honest epistemics in system prompt (distinguish memory-claims from verified facts).
+- [x] **Conversation side improvements (2026-05-03)** — CHAT_TOOLS (8 lean tools, default), store_memory mid-conversation (no longer wrap-only), !work/!endwork mode switching for code tools, synthesis timeout raised to 300s.
+- [ ] **Conversation side monitoring** — observe lean CHAT_TOOLS in practice; verify store_memory fires mid-session; watch for any remaining synthesis timeout issues
 
 ---
 
